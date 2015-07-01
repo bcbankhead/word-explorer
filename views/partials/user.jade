@@ -9,4 +9,5 @@
     .searchcount
       | Words Discovered: 
     .count
-      |#{data.words.length}
+      if data.words
+        |#{data.words.length}
