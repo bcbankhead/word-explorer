@@ -269,5 +269,11 @@ $( document ).ready(function() {
   var status = document.getElementById('word')
       status.placeholder = "search..."
       status.style.backgroundColor = 'rgb(240,240,240)';
+    status.addEventListener('focus', function(){
+    status.style.backgroundColor = 'rgb(0,255,255)';
+    })
+    status.addEventListener('blur', function(){
+    status.style.backgroundColor = 'rgb(240,240,240)';
+    })
   },500)
 });

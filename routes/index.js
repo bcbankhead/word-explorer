@@ -15,6 +15,7 @@ var functions = require('../public/javascripts/serverside.js');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   var cookieUser = req.cookies.user;
+  console.log(cookieUser);
   var response = req.body.response;
     if(!cookieUser || cookieUser === 'new'){
       res.render('index', { currentUser: 'new'});
