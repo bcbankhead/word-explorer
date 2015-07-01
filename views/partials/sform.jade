@@ -1,0 +1,5 @@
+#sform
+  form(action="/words" method="POST")
+    input(name="word" class="input" id="word" type="text" placeholder="prefetching word list..." autofocus)
+    input(name="visits" type="hidden" value="#{data.visitcount}")
+    input(type="submit" id="submit" value="explore!" class="button_submit")

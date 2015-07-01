@@ -1,0 +1,12 @@
+.user
+  if currentUser == 'new'
+    a(href="/signup") Sign Up
+  else
+    .signedin
+      |Welcome, #{currentUser} 
+    .logout
+      a(href="/logout") Logout
+    .searchcount
+      | Words Discovered: 
+    .count
+      |#{data.words.length}

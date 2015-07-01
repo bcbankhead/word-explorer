@@ -1,0 +1,18 @@
+p
+  if word
+    .backlabel
+      |Back
+    .discoveredlabel  
+      |Showing Chord Chart for:
+    .backcenter
+      #back
+    .discovered
+      .heading2 
+        if errorMsg
+            a(href="/addword/" + word + "1",  id="addword", title="add word to your list?") #{word}
+        else
+            a(href="/addword/" + word,  id="addword", title="add word to your list?") #{word}
+  if definition
+    .heading4 #{definition.definition}
+  if errorMsg
+    .heading3 #{errorMsg}

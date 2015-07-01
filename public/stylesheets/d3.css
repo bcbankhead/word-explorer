@@ -1,0 +1,61 @@
+/*d3.css*/
+
+.ds3 {
+  display:inline-block;
+  width: 74%;
+  height: 750px;
+  vertical-align: top;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding:0;
+  z-index: 1001;
+  position:relative;
+}
+
+#graph {
+  margin: 0 auto;
+  border: 0px solid black;
+  text-align: center;
+}
+
+path.arc {
+  cursor: move;
+  fill: #fff;
+}
+
+.node {
+  font: 300 17px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  fill: #bbb;
+}
+
+.node:hover {
+  fill: #1f77b4;
+}
+
+.link {
+  fill: none;
+  stroke: #1f77b4;
+  stroke-opacity: .4;
+  pointer-events: none;
+}
+
+.link.source, .link.target {
+  stroke-opacity: 1;
+  stroke-width: 2px;
+}
+
+.node.target {
+  fill: #d62728 !important;
+}
+
+.link.source {
+  stroke: #d62728;
+}
+
+.node.source {
+  fill: #2ca02c;
+}
+
+.link.target {
+  stroke: #2ca02c;
+}

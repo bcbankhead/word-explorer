@@ -1,0 +1,109 @@
+
+.main {
+  border:1px solid black;
+  width: 90%;
+  margin:0 auto;
+  overflow:hidden;
+  padding:0px;
+  box-sizing: border-box;
+}
+.width {
+  width:700px;
+  height:20px;
+}
+
+.search {
+  display: inline-block;
+  width: 300px;
+  height:750px;
+  fot-size:18px;
+  vertical-align: top;
+  box-sizing: border-box;
+  padding-left: 25px;
+  margin:0px;
+  border-left:1px dotted black;
+}
+
+.user {
+  vertical-align: top;
+  padding:0;
+  margin:0px;
+  margin-top:15px;
+  display:inline-block;
+  border-right:0px dotted black;
+  width:200px;
+  height:70px;
+  font-size:14px;
+  box-sizing: border-box;
+}
+
+.heading {
+  font-size: 24px;
+  color: rgb(0, 0, 0);
+  font-weight: bolder;
+}
+
+.main{
+  padding:0px;
+  border:1px solid black;
+}
+
+
+.error {
+  display:inline-block;
+  color: rgb(255, 0, 0);
+}
+
+.heading2 {
+  font-size: 24px;
+  color: rgb(110, 110, 110);
+  font-weight: bolder;
+}
+
+.heading3 {
+  font-size: 12px;
+  color: rgb(255, 0, 0);
+  font-weight: bolder;
+}
+
+.heading4 {
+  font-size: 12px;
+  color: rgb(180, 180, 180);
+  font-weight: normal;
+  text-align: justify;
+}
+.searchdata {
+  font-size: 11px;
+  color: rgb(0, 0, 0);
+  font-weight: normal;
+}
+
+.profile {
+  font-size: 14px;
+  color: rgb(0, 0, 0);
+  font-weight: normal;
+}
+
+.login {
+  padding:100px;
+  margin:0 auto;
+}
+
+
+.titlebox {
+  position:absolute;
+  top:20px;
+  display:inline-block;
+  padding:0px;
+  box-sizing: border-box;
+  margin:0px;
+  font-size: 75px;
+  font-weight: bold;
+  font-family: Arial;
+  color: rgb(240, 240, 240);
+  z-index:1;
+}
+.spacer {
+  display:inline-block;
+  height:20px;
+}

@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+  .main
+    .titlebox
+     | Word Explorer
+    .login
+      form(action="/login" method="POST")
+        if currentUser == 'new' || currentUser == '' || currentUser == null
+          input(name="user" id="user" class="input" type="text" placeholder="User Name" autofocus)
+        else
+          input(name="user" id="user" class="input" type="text" value="#{currentUser}" autofocus)
+        br
+        input(name="password" id="password" class="input" type="password" placeholder="Password") 
+        br 
+        input(type="submit" id="submit" value="Login" class="button_signup")
+      p
+        a(href="/signup") Sign Up
+      .error 
+        if message
+          |#{message}
+    

@@ -1,0 +1,21 @@
+extends ../layout
+
+block content
+    .main
+      .titlebox
+       | Word Explorer
+      .ds3
+        #graph
+        .width
+      .search
+        include ../partials/user
+        include ../partials/sform
+        include ../partials/search
+        if currentUser != 'new'
+          include ../partials/profile
+        
+        #hidden
+          if payload  
+            !{payload}
+          else
+            |empty

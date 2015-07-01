@@ -1,0 +1,10 @@
+[
+  {"name":"words.stupid.adjectives","imports":["words.stupid.crass","words.stupid.unwise","words.stupid.idiotic"]},
+  {"name":"words.stupid.nouns","size":3812,"imports":["words.stupid.fool", "words.stupid.idiot","words.stupid.retard"]},
+  {"name":"words.stupid.fool","size":3812,"imports":[]},
+  {"name":"words.stupid.crass","size":3812,"imports":[]},
+  {"name":"words.stupid.idiot","size":3812,"imports":[]},
+  {"name":"words.stupid.idiotic","size":3812,"imports":[]},
+  {"name":"words.stupid.retard","size":3812,"imports":[]},
+  {"name":"words.stupid.unwise","size":3812,"imports":[]}
+]

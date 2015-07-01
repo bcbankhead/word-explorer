@@ -1,0 +1,24 @@
+.profile
+ if data
+    if data.words
+      .modeselect
+        .history
+          |#{currentUser}'s search history:
+        #delmode
+          |del
+        #addmode
+          |add
+      .wordcontainer
+        #word-box
+          for item, i in data.words
+            .col1
+              if item !== ''
+                a(href="/words/" + item) #{item}
+        #word-box-del
+          for item, i in data.words
+            .col1
+              if item !== ''
+                a(href="/delete/" + item) #{item}
+      if rMsg
+        .removed
+          |#{rMsg}  
