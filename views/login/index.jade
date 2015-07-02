@@ -5,6 +5,9 @@ block content
     .titlebox
      | Word Explorer
     .login
+      .profile
+        .login2  
+          |Log In
       form(action="/login" method="POST")
         if currentUser == 'new' || currentUser == '' || currentUser == null
           input(name="user" id="user" class="input" type="text" placeholder="User Name" autofocus)
@@ -14,9 +17,9 @@ block content
         input(name="password" id="password" class="input" type="password" placeholder="Password") 
         br 
         input(type="submit" id="submit" value="Login" class="button_signup")
-      p
-        a(href="/signup") Sign Up
-      .error 
-        if message
-          |#{message}
-    
+        p
+          a(href="/signup") Sign Up
+        .error 
+          if message
+            |#{message}
+      

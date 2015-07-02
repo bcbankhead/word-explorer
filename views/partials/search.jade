@@ -13,6 +13,7 @@ p
         else
             a(href="/addword/" + word,  id="addword", title="add word to your list?") #{word}
   if definition
-    .heading4 #{definition.definition}
+    for item in definition
+      .heading4 #{item}
   if errorMsg
     .heading3 #{errorMsg}

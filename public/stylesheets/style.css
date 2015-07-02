@@ -241,3 +241,19 @@ a {
   font-weight: bold;
   margin-top:15px;
 }
+
+.login2 {
+  text-align: right;
+  vertical-align: bottom;
+  display:inline-block;
+  border: 0px solid black;
+  font-size:50px;
+  font-weight: bold;
+  height:50px;
+  color: #AAA;
+  padding:0px;
+  margin-left:0px;
+  margin-top:15px;
+  margin-bottom:0px;
+  box-sizing: border-box;
+}

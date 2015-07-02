@@ -2,7 +2,7 @@
 
 .ds3 {
   display:inline-block;
-  width: 74%;
+  width: 850px;
   height: 750px;
   vertical-align: top;
   margin: 0 auto;
@@ -10,6 +10,8 @@
   padding:0;
   z-index: 1001;
   position:relative;
+  float:left;
+  border:0px solid green;
 }
 
 #graph {

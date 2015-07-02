@@ -96,39 +96,42 @@ module.exports = {
   }
 },
 
-emailValidate: function(currentUser, password, duplicate){
-  var errorObject = {}
+emailValidate: function(currentUser, password, confirm, duplicate){
+  var errorObject = []
   var errorCode = 0;
 
   if (currentUser === ""){
-    errorObject.error1 = "Username Cannot be Blank";
+    errorObject.push("Username Cannot be Blank.");
     errorCode += 1;
   } else {
-    errorObject.error1 = "";
     errorCode += 0;
   }
 
   if (password.length === 0){
-    errorObject.error2 = "Password Cannot be Blank";
+    errorObject.push("Password Cannot be Blank.");
     errorCode += 1;
   } else {
-    errorObject.error2 = "";
     errorCode += 0;
   }
 
   if (password.length < 3){
-    errorObject.error3 = "Password Cannot be less than 3 characters";
+    errorObject.push("Password Cannot be less than 3 characters.");
     errorCode += 1;
   } else {
-    errorObject.error3 = "";
+    errorCode += 0;
+  }
+
+  if (password !== confirm){
+    errorObject.push("Passwords do not match.");
+    errorCode += 1;
+  } else {
     errorCode += 0;
   }
 
   if (duplicate >= 1){
-    errorObject.error4 = "Account for this user name already exists";
+    errorObject.push("Account for this user name already exists.");
     errorCode += 1;
   } else {
-    errorObject.error4 = "";
     errorCode += 0;
   }
   return {errors: errorObject, errorStatus: errorCode};

@@ -1,25 +1,28 @@
 extends ../layout
 
 block content
-    .main
-      .titlebox
-       | Word Explorer
-      .login
-        .profile
-          |Sign up to explore!
-        form(action="/signup" method="POST")
-          if errors
-            input(name="user" id="user" class="input" type="text" value="#{posted.username}" autofocus)
-            br
-          else
-            input(name="user" id="user" class="input" type="text" placeholder="Username" autofocus)
-            br
-          input(name="password" id="password" class="input" type="password")  
-          br
-          input(type="submit" id="submit" value="sign up!" class="button_signup")
-        p
-          a(href="login") Login with your existing account
+  .main
+    .titlebox
+     | Word Explorer
+    .login
+      .profile
+        .login2  
+          |Sign Up
+      form(action="/signup" method="POST")
         if errors
-        .error 
-          include ../partials/errorparse 
-      
+          input(name="user" id="user" class="input" type="text" value="#{posted.username}" autofocus)
+          br
+        else
+          input(name="user" id="user" class="input" type="text" placeholder="Username" autofocus)
+          br
+        input(name="password" id="password" class="input" type="password" placeholder="Password")  
+        br
+        input(name="confirm" id="password" class="input" type="password" placeholder="Confirm Password")  
+        br
+        input(type="submit" id="submit" value="sign up!" class="button_signup")
+      p
+        a(href="login") Log In 
+      if errors
+      .error 
+        include ../partials/errorparse 
+    
