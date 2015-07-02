@@ -19,11 +19,18 @@ var payload = document.getElementById('hidden').innerHTML;
 
 if(payload != "empty"){
 
+
+
   payload = JSON.parse(payload);
 
-  var w = 770,
-      h = 750,
-      rx = w / 2,
+  var h = window.innerHeight;
+  var w = document.getElementById('graph').clientWidth
+
+
+  console.log("h",h);
+  console.log("w",w);
+
+  var rx = w / 2,
       ry = h / 2,
       m0,
       rotate = 0;
@@ -45,13 +52,13 @@ if(payload != "empty"){
   // Chrome 15 bug: <http://code.google.com/p/chromium/issues/detail?id=98951>
   var div = d3.select("#graph")
     .insert("div", "h2")
-      //.style("top", "-80px")
-      //.style("left", "0px")
-      //.style('border', '1px solid black')
-       //.style("width", w + "px")
-       //.style("height", w + "px")
-      // .style("position", "relative")
-      // .style("-webkit-backface-visibility", "hidden");
+      .style("top", "0px")
+      .style("left", "0px")
+      .style('border', '0px solid black')
+      .style("width", w + "px")
+      .style("height", w + "px")
+      .style("position", "relative")
+      .style("-webkit-backface-visibility", "hidden");
 
   var svg = div.append("svg:svg")
       .attr("width", w)

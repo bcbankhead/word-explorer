@@ -75,9 +75,9 @@
   overflow: hidden;
   box-sizing: border-box;
   padding:0px;
-  width:auto;
+  width:270px;
   text-align: justify;
-  transition:all 0.3s ease;
+  transition:all 0.5s ease;
 }
 
 #word-box-del {
@@ -89,9 +89,9 @@
   overflow: hidden;
   box-sizing: border-box;
   padding:0px;
-  width:auto;
+  width:270px;
   text-align: justify;
-  transition:all 0.3s ease;
+  transition:all 0.5s ease;
 }
 
 #word-box-del a{
@@ -103,7 +103,7 @@
 }
 
 #addmode {
-  float:right;
+  float:left;
   display:inline-block;
   border:1px solid black;
   background-color: rgb(215, 255, 255);
@@ -113,11 +113,12 @@
   color: rgb(0,115,115);
   box-sizing: border-box;
   transition:all 0.3s ease;
+  margin-left:3px;
   cursor:pointer;
 }
 
 #addmode:hover {
-  float:right;
+  float:left;
   display:inline-block;
   border:1px solid black;
   background-color: rgb(115, 215, 215);
@@ -127,12 +128,13 @@
   color: rgb(225,255,255);
   box-sizing: border-box;
   transition:all 0.3s ease;
+  margin-left:3px;
   cursor:pointer;
 }
 
 #delmode {
   display:inline-block;
-  float:right;
+  float:left;
   margin-left:3px;
   border:1px solid black;
   background-color: rgb(255, 255, 255);
@@ -142,12 +144,13 @@
   color: rgb(240, 180, 180);;
   box-sizing: border-box;
   transition:all 0.3s ease;
+  margin-left:3px;
   cursor:pointer;
 }
 
 #delmode:hover {
   display:inline-block;
-  float:right;
+  float:left;
   margin-left:3px;
   border:1px solid black;
   background-color: rgb(255, 155, 155);
@@ -157,6 +160,7 @@
   color: rgb(255, 255, 255);;
   box-sizing: border-box;
   transition:all 0.3s ease;
+  margin-left:3px;
   cursor:pointer;
 }
 
