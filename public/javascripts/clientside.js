@@ -52,7 +52,7 @@ if(payload != "empty"){
   // Chrome 15 bug: <http://code.google.com/p/chromium/issues/detail?id=98951>
   var div = d3.select("#graph")
     .insert("div", "h2")
-      .style("top", "0px")
+      .style("top", "-20px")
       .style("left", "0px")
       .style('border', '0px solid black')
       .style("width", w + "px")
