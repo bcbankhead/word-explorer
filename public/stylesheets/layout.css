@@ -100,10 +100,15 @@
   position: relative;
   vertical-align: top;
   transform: rotate(90deg);
+  transform-origin: left top 0;
   display:inline-block;
-  top: 300px;
+  /*top: 300px;
   left:-320px;
+  width:700px;*/
+  top: 0px;
+  left:85px;
   width:700px;
+  /*background-color: red;*/
   padding:0px;
   box-sizing: border-box;
   margin:0px;
