@@ -1,7 +1,7 @@
 var express = require('express');
 var bcrypt = require('bcryptjs');
 var unirest = require('unirest');
-//var fs = require('fs');
+
 var router = express.Router();
 var db = require('monk')(process.env.MONGOLAB_URI);
 var userCollection = db.get('words_users');
@@ -12,107 +12,81 @@ var api3 = (process.env.thesaurus);
 var api4 = (process.env.pearson_consumer);
 
 var functions = require('../public/javascripts/serverside.js');
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   var cookieUser = req.cookies.user;
-  console.log(cookieUser);
   var response = req.body.response;
-    if(!cookieUser || cookieUser === 'new'){
-      res.render('index', { currentUser: 'new'});
-    } else {
-      userCollection.findOne({username: cookieUser}, function(err, dataset){
+
+  if(!cookieUser || cookieUser === 'new'){
+    res.render('index', { currentUser: 'new'});
+  } else {
+    userCollection.findOne({username: cookieUser}, function(err, dataset){
       res.render('words/index', { currentUser: cookieUser, data: dataset });
     });
-    }
-  });
+  }
+});
 
 router.post('/words', function(req, res, next) {
   var currentUser = req.cookies.user;
   var theWord = req.body.word.replace(/\-/g," ");
-  var visits = parseInt(req.body.visits,10);
+      theWord = theWord.toLowerCase();
   var notavail = 0;
   var thesaurusObj = {};
   var definitions = {};
-  theWord = theWord.toLowerCase();
 
-  var definitionURL = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/definitions?limit=200&includeRelated=true&sourceDictionaries=ahd&useCanonical=false&includeTags=false&api_key=" + api1;
-  var synonymsURL = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/relatedWords?useCanonical=false&relationshipTypes=synonym&limitPerRelationshipType=10&api_key=" + api1;
-  var entomologyURL = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/etymologies?useCanonical=false&api_key=" + api1;
+  var wordNikAPI = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/definitions?limit=200&includeRelated=true&sourceDictionaries=ahd&useCanonical=false&includeTags=false&api_key=" + api1;
+  var synonymsAPI = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/relatedWords?useCanonical=false&relationshipTypes=synonym&limitPerRelationshipType=10&api_key=" + api1;
+  var entomologyAPI = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/etymologies?useCanonical=false&api_key=" + api1;
   var dictionaryAPI = "http://www.dictionaryapi.com/api/v1/references/thesaurus/xml/" + theWord + "?key=" + api2;
   var thesaurusAPI = "http://words.bighugelabs.com/api/2/" + api3 + "/" + theWord + "/json";
   var pearsonAPI = "https://api.pearson.com/v2/dictionaries/ldoce5/entries?headword=" + theWord + "&apikey=" + api4;
   //var yandexAPI = "https://api.pearson.com/v2/dictionaries/ldoce5/entries?headword=" + theWord + "&apikey=" + api4;
 
-      unirest.get(thesaurusAPI).end(function (response) {
-          var thesaurusResult = response.body;
-        unirest.get(definitionURL).end(function (response) {
-              var definition = response.body;
-          unirest.get(pearsonAPI).end(function (response) {
-                var definitionPearson = response.body;
-
-          if(definitionPearson){
-              if(definitionPearson.results){
-                 if (definitionPearson.results.length > 0){
-                    if(definitionPearson.results[0].senses.length > 0){
-                        if(definitionPearson.results[0].senses[0].definition){
-                          var pearsonDef = definitionPearson.results[0].senses[0].definition[0];
-                          pearsonDef = functions.toProperCase(pearsonDef);
-                      }
-          }}}}else{
-            pearsonDef = undefined;
+  functions.getData(thesaurusAPI, function(thesaurusResult){
+    functions.getData(wordNikAPI, function(definition){
+      functions.getData(pearsonAPI, function(definitionPearson){
+        var pearsonDef = functions.pearsonData(definitionPearson);
+          if(pearsonDef){
+            pearsonDef = functions.toProperCase(pearsonDef);
           }
 
-      if(definition){
-        if(definition.length > 0){
-          var wordNikResult = functions.parseObject(definition);
-        }
+        if(definition){
+          if(definition.length > 0){
+            var wordNikDef = functions.parseWordNik(definition);
+          }
         } else {
           userCollection.findOne({username: currentUser}, function(err, dataset){
             theWord = functions.toProperCase(theWord);
             res.render('words/index', { word: theWord, currentUser: currentUser, data: dataset, errorMsg: "Word field is blank.(001)" });
           });
-      }
-
-      if (thesaurusResult != undefined){
-        thesaurusResult = JSON.parse(thesaurusResult);
-        thesaurusObj = functions.trParse(theWord,thesaurusResult);
-        thesaurusObj = JSON.stringify(thesaurusObj)
-        notavail = 0;
-      } else if (thesaurusResult == undefined) {
-        notavail = 1;
-        if(currentUser != 'new' || currentUser != null){
-          userCollection.findOne({username: currentUser}, function(err, dataset){
-            theWord = functions.toProperCase(theWord);
-            res.render('words/index', { word: theWord, currentUser: currentUser, data: dataset, errorMsg: "No records found in thesaurus.(002)" });
-          });
-        } else {
-          res.render('words/index', { word: theWord, errorMsg: "No records found in thesaurus.(003)" });
         }
-      }
 
-//Definitions Export
-      if (wordNikResult || pearsonDef){
-        if (wordNikResult && pearsonDef){
-          definitions.def1 = wordNikResult.definition;
-          definitions.def2 = pearsonDef;
-        } else if (wordNikResult && !pearsonDef){
-          definitions.def1 = wordNikResult.definition;
-          definitions.def2 = null;
-        } else if (!wordNikResult && pearsonDef){
-          definitions.def1 = null;
-          definitions.def2 = pearsonDef;
+        if (thesaurusResult != undefined){
+          thesaurusResult = JSON.parse(thesaurusResult);
+          thesaurusObj = functions.trParse(theWord,thesaurusResult);
+          thesaurusObj = JSON.stringify(thesaurusObj)
+          notavail = 0;
+        } else if (thesaurusResult == undefined) {
+          notavail = 1;
+          if(currentUser != 'new' || currentUser != null){
+            userCollection.findOne({username: currentUser}, function(err, dataset){
+              theWord = functions.toProperCase(theWord);
+              res.render('words/index', { word: theWord, currentUser: currentUser, data: dataset, errorMsg: "No records found in thesaurus.(002)" });
+            });
+          } else {
+            res.render('words/index', { word: theWord, errorMsg: "No records found in thesaurus.(003)" });
+          }
         }
-      } else {
-          definitions.def1 = "No definitions available...";
-          definitions.def2 = null;
-      }
 
-//Write dataEntry for Database
-      theWord = functions.toProperCase(theWord);
-      if (theWord.length > 0 && notavail === 0){
-        if (currentUser !== 'new' || currentUser != '' || currentUser != null){
-          visits += 1;
-          userCollection.update(
+        var definitions = functions.defCollect(wordNikDef,pearsonDef);
+
+        //Write dataEntry for Database
+        theWord = functions.toProperCase(theWord);
+        if (theWord.length > 0 && notavail === 0){
+          if (currentUser !== 'new' || currentUser != '' || currentUser != null){
+
+            userCollection.update(
             { username: currentUser },
             { $pull: { words: theWord } });
 
@@ -122,26 +96,22 @@ router.post('/words', function(req, res, next) {
 
             userCollection.update(
             { username: currentUser },
-            { $push: { words: theWord } });
+            { $push: { words: theWord }});
 
             userCollection.update(
             { username: currentUser },
-            {
-              $push: { words: { $each: [ ], $sort: 1 } }
-            })
-          };
+            { $push: { words: { $each: [ ], $sort: 1 } } });
 
-//
+            };
+
           if(!currentUser || currentUser === 'new'){
               res.render('words/index', { word: theWord, payload: thesaurusObj, definition: definitions, currentUser: 'new'});
           } else {
             userCollection.findOne({username: currentUser}, function(err, dataset){
-            theWord = functions.toProperCase(theWord);
-                res.render('words/index', { word: theWord, payload: thesaurusObj, definition: definitions, currentUser: currentUser, data: dataset });
-          });
+              res.render('words/index', { word: theWord, payload: thesaurusObj, definition: definitions, currentUser: currentUser, data: dataset });
+            });
           }
         } else {
-          console.log(currentUser);
           if(!currentUser || currentUser === 'new'){
             res.render('words/index', { word: theWord, errorMsg: "Word not located in thesaurus.(006)" });
           } else {
@@ -156,6 +126,7 @@ router.post('/words', function(req, res, next) {
   });
 });
 
+//Explorer: Add word
 router.get('/addword/:word', function(req, res, next) {
   var tmpWord = req.params.word;
   var avail = 0;
@@ -167,11 +138,13 @@ router.get('/addword/:word', function(req, res, next) {
   }
 
   var currentUser = req.cookies.user;
-  theWord = functions.toProperCase(theWord);
 
+  //Write Entry to Database
+  theWord = functions.toProperCase(theWord);
   if(avail === 0){
     if (currentUser !== 'new' || currentUser != '' || currentUser != null){
-      userCollection.update(
+
+        userCollection.update(
         { username: currentUser },
         { $pull: { words: theWord } });
 
@@ -189,16 +162,17 @@ router.get('/addword/:word', function(req, res, next) {
 
         res.redirect('/words/'+ theWord)
       };
-    } else {
+  } else {
       userCollection.findOne({username: currentUser}, function(err, dataset){
         res.render('words/index', {currentUser: currentUser, data: dataset, word: theWord, errorMsg: "Word not located in thesaurus.(008)" });
       });
-    }
-    if (!currentUser || currentUser === 'new'){
-      res.redirect('/');
-    }
+  }
+  if (!currentUser || currentUser === 'new'){
+    res.redirect('/');
+  }
 });
 
+//Delete Entry
 router.get('/delete/:word', function(req, res, next) {
   var tmpWord = req.params.word;
   var avail = 0;
@@ -220,117 +194,82 @@ router.get('/delete/:word', function(req, res, next) {
       userCollection.findOne({username: currentUser}, function(err, dataset){
         res.render('words/index', {currentUser: currentUser, data: dataset, word: theWord, rMsg: "Removed word: " + theWord });
       });
-      };
-    }
-    if (!currentUser || currentUser === 'new'){
-      res.redirect('/');
-    }
+    };
+  }
+  if (!currentUser || currentUser === 'new'){
+    res.redirect('/');
+  }
 });
 
-
-router.get('/words/:word', function(req, res, next) {
+//Explorer: Display Word
+router.get('/words/:word', function(req, res, next){
   var theWord = req.params.word.replace(/\-/g," ");
-  var thesaurusObj = {};
-  var definitions = {};
-  var notavail = 0;
   theWord = theWord.toLowerCase();
-  var definitionURL = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/definitions?limit=200&includeRelated=true&sourceDictionaries=ahd&useCanonical=false&includeTags=false&api_key=" + api1;
-  var synonymsURL = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/relatedWords?useCanonical=false&relationshipTypes=synonym&limitPerRelationshipType=10&api_key=" + api1;
-  var entomologyURL = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/etymologies?useCanonical=false&api_key=" + api1;
+  var thesaurusObj = {};
+  var notavail = 0;
+  var wordNikAPI = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/definitions?limit=200&includeRelated=true&sourceDictionaries=ahd&useCanonical=false&includeTags=false&api_key=" + api1;
+  var synonymsAPI = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/relatedWords?useCanonical=false&relationshipTypes=synonym&limitPerRelationshipType=10&api_key=" + api1;
+  var entomologyAPI = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/etymologies?useCanonical=false&api_key=" + api1;
   var dictionaryAPI = "http://www.dictionaryapi.com/api/v1/references/thesaurus/xml/" + theWord + "?key=" + api2;
   var thesaurusAPI = "http://words.bighugelabs.com/api/2/" + api3 + "/" + theWord + "/json";
   var pearsonAPI = "https://api.pearson.com/v2/dictionaries/ldoce5/entries?headword=" + theWord + "&apikey=" + api4;
   //var yandexAPI = "https://api.pearson.com/v2/dictionaries/ldoce5/entries?headword=" + theWord + "&apikey=" + api4;
 
-      unirest.get(thesaurusAPI).end(function (response) {
-          var thesaurusResult = response.body;
-        unirest.get(definitionURL).end(function (response) {
-              var definition = response.body;
-          unirest.get(pearsonAPI).end(function (response) {
-                var definitionPearson = response.body;
+  functions.getData(thesaurusAPI, function(thesaurusResult){
+    functions.getData(wordNikAPI, function(definition){
+      functions.getData(pearsonAPI, function(definitionPearson){
+        var pearsonDef = functions.pearsonData(definitionPearson);
+          if(pearsonDef){
+            pearsonDef = functions.toProperCase(pearsonDef);
+          }
 
-      if(definitionPearson){
-          if(definitionPearson.results){
-             if (definitionPearson.results.length > 0){
-                if(definitionPearson.results[0].senses.length > 0){
-                    if(definitionPearson.results[0].senses[0].definition){
-                      var pearsonDef = definitionPearson.results[0].senses[0].definition[0];
-                      pearsonDef = functions.toProperCase(pearsonDef);
-                  }
-      }}}}else{
-        pearsonDef = undefined;
-      }
+        if(definition.length > 0){
+          var wordNikDef = functions.parseWordNik(definition);
+        }
 
-      if(definition.length > 0){
-        var wordNikResult = functions.parseObject(definition);
-      }
-
-      if (thesaurusResult != undefined){
-        thesaurusResult = JSON.parse(thesaurusResult);
-        thesaurusObj = functions.trParse(theWord,thesaurusResult);
-        thesaurusObj = JSON.stringify(thesaurusObj)
-        notavail = 0;
-      } else if (thesaurusResult === undefined) {
-        theWord = functions.toProperCase(theWord);
-        notavail = 1;
-      }
+        if (thesaurusResult != undefined){
+          thesaurusResult = JSON.parse(thesaurusResult);
+          thesaurusObj = functions.trParse(theWord,thesaurusResult);
+          thesaurusObj = JSON.stringify(thesaurusObj)
+          notavail = 0;
+        } else if (thesaurusResult === undefined) {
+          notavail = 1;
+        }
 
         var cookieUser = req.cookies.user;
         if(!cookieUser){
           res.render('words/index', { word: theWord, payload: thesaurusObj, currentUser: 'new' });
         }
 
-        if (wordNikResult || pearsonDef){
-          if (wordNikResult && pearsonDef){
-            definitions.def1 = wordNikResult.definition;
-            definitions.def2 = pearsonDef;
-          } else if (wordNikResult && !pearsonDef){
-            definitions.def1 = wordNikResult.definition;
-            definitions.def2 = null;
-          } else if (!wordNikResult && pearsonDef){
-            definitions.def1 = null;
-            definitions.def2 = pearsonDef;
-          }
-        } else {
-            definitions.def1 = "No definitions available...";
-            definitions.def2 = null;
-        }
+        var definitions = functions.defCollect(wordNikDef,pearsonDef);
 
-        console.log(definitions);
-
+        theWord = functions.toProperCase(theWord);
         if(cookieUser && notavail == 0){
           userCollection.findOne({username: cookieUser}, function(err, dataset){
-            theWord = functions.toProperCase(theWord);
-              res.render('words/index', { word: theWord, payload: thesaurusObj, data: dataset, currentUser: cookieUser, definition: definitions});
+          res.render('words/index', { word: theWord, payload: thesaurusObj, data: dataset, currentUser: cookieUser, definition: definitions});
           });
         } else if(cookieUser && notavail == 1){
           userCollection.findOne({username: cookieUser}, function(err, dataset){
-          theWord = functions.toProperCase(theWord);
-          if(definitions != {}){
-            res.render('words/index', { word: theWord, payload: thesaurusObj, data: dataset, currentUser: cookieUser, errorMsg: 'Word not located in thesaurus.(009)', definition: definitions});
-          } else {
-            res.render('words/index', { word: theWord, payload: thesaurusObj, data: dataset, currentUser: cookieUser, errorMsg: 'Word not available in either source.(010)', definition: {definition: "No definition Availaible. (011D)"}});
-          }
-        });
+          res.render('words/index', { word: theWord, payload: thesaurusObj, data: dataset, currentUser: cookieUser, errorMsg: 'Word not located in thesaurus.(009)', definition: definitions});
+          });
         }
       });
     });
   });
 });
 
+//Signup
 router.post('/signup', function(req, res, next){
   var currentUser = functions.toProperCase(req.body.user);
   var password = req.body.password;
   var confirm = req.body.confirm;
 
   functions.duplicates(currentUser, function(duplicate){
-
       var nameRes = functions.emailValidate(currentUser, password, confirm, duplicate);
-
       if (nameRes.errorStatus > 0){
-      var returnValues = {}
-          returnValues.username = currentUser,
-      res.render('signup/index', { title: "Express", errors: nameRes.errors, posted: returnValues });
+        var returnValues = {}
+        returnValues.username = currentUser,
+        res.render('signup/index', { title: "Express", errors: nameRes.errors, posted: returnValues });
       }
 
       if (nameRes.errorStatus === 0){
@@ -343,20 +282,21 @@ router.post('/signup', function(req, res, next){
         res.cookie('user', currentUser)
         userCollection.findOne({username: currentUser}, function(err, dataset){
           var id = dataset._id;
-        res.redirect('/profiles/'+ id);
-      });
+          res.redirect('/profiles/'+ id);
+        });
       }
   });
 })
 
+//Get Profile
 router.get('/profiles/:id', function(req, res, next) {
   var cookieUser = req.cookies.user;
   if(!cookieUser){
     res.redirect('/');
   } else {
-  userCollection.findOne({username: cookieUser}, function(err, dataset){
+    userCollection.findOne({username: cookieUser}, function(err, dataset){
       var id = dataset._id;
-       if (req.params.id != id) {
+      if (req.params.id != id) {
         res.redirect('/');
       } else {
         console.log(dataset.words);
@@ -366,6 +306,7 @@ router.get('/profiles/:id', function(req, res, next) {
   }
 });
 
+//Get Login
 router.get('/login', function(req, res, next){
   var cookieUser = req.cookies.user;
   if(!cookieUser){
@@ -385,34 +326,31 @@ router.get('/logout', function(req, res, next) {
   res.render('login/index', {currentUser: 'new', message: 'Logged out successfully'});
 });
 
-
+//Login Execution
 router.post('/login', function(req, res, next){
-var currentUser = functions.toProperCase(req.body.user);
-userCollection.findOne({username: currentUser}, function(err, record){
-  if (record === null){
-    res.render('login/index', {currentUser: currentUser, message: "No login found for user: " + currentUser})
-  } else {
-var passCompare = bcrypt.compareSync(req.body.password, record.password);
-  if (passCompare === true){
-    var visits = record.visitcount;
-    visits++;
-    userCollection.update({
-        user: currentUser
-      },
-      {
-        visitcount: visits
-      });
-    res.cookie('user', currentUser)
-    userCollection.findOne({username: currentUser}, function(err, dataset){
-      var id = dataset._id;
-      res.redirect('/profiles/'+ id);
-    });
-  } else {
-    res.redirect('/failure')
-    console.log("fail");
-  }
-}
-})
-})
+  var currentUser = functions.toProperCase(req.body.user);
+  userCollection.findOne({username: currentUser}, function(err, record){
+    if (record === null){
+      res.render('login/index', {currentUser: currentUser, message: "No login found for user: " + currentUser})
+    } else {
+      var passCompare = bcrypt.compareSync(req.body.password, record.password);
+      if (passCompare === true){
+        var visits = record.visitcount;
+        visits++;
+        userCollection.update(
+          {user: currentUser },
+          { visitcount: visits });
+        res.cookie('user', currentUser)
+
+        userCollection.findOne({username: currentUser}, function(err, dataset){
+          var id = dataset._id;
+          res.redirect('/profiles/'+ id);
+        });
+      } else {
+        res.render('login', {message: "Username or password incorrect."})
+      }
+    };
+  });
+});
 
 module.exports = router;

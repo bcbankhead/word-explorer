@@ -1,12 +1,80 @@
 module.exports = {
 
-  parseObject: function(definition){
+  updateData: function(currentUser, theWord){
+    var db = require('monk')(process.env.MONGOLAB_URI);
+    var userCollection = db.get('words_users');
+
+    userCollection.update(
+    { username: currentUser },
+    { $pull: { words: theWord } });
+
+    userCollection.update(
+    { username: currentUser },
+    { $pull: { words: '' } });
+
+    userCollection.update(
+    { username: currentUser },
+    { $push: { words: theWord } });
+
+    userCollection.update(
+    { username: currentUser },
+    { $push: { words: { $each: [ ], $sort: 1 } } })
+
+  },
+
+  defCollect: function(def1,def2){
+
+    var definitions = {};
+
+    if (def1 || def2){
+      if (def1 && def2){
+        definitions.def1 = def1;
+        definitions.def2 = def2;
+      } else if (def1 && !def2){
+        definitions.def1 = def1;
+        definitions.def2 = null;
+      } else if (!def1 && def2){
+        definitions.def1 = null;
+        definitions.def2 = def2;
+      }
+    } else {
+        definitions.def1 = "No definitions available...";
+        definitions.def2 = null;
+    }
+    return definitions;
+  },
+
+  pearsonData: function(data){
+    if(data){
+      if(data.results){
+        if (data.results.length > 0){
+          if(data.results[0].senses.length > 0){
+            if(data.results[0].senses[0].definition){
+              var pearsonDef = data.results[0].senses[0].definition[0];
+              return data.results[0].senses[0].definition[0];
+            }
+          }
+        }
+      }
+    } else {
+      return undefined;
+    }
+  },
+
+  getData: function(url,callback){
+    var unirest = require('unirest');
+    unirest.get(url).end(function (response) {
+        callback(response.body);
+    })
+  },
+
+  parseWordNik: function(definition){
     if (definition.length > 0 || definition[0] != null || definition[0] != ''){
       var definition = definition[0].text;
     } else {
       var definition = 0;
     }
-    return {definition: definition}
+    return definition
   },
 
   trParse: function(base,input,synonyms1){
