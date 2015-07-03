@@ -79,6 +79,23 @@
   text-align: justify;
 }
 
+.heading5 a{
+  font-size: 14px;
+  color: rgb(180, 180, 250);
+  font-weight: bold;
+  text-decoration: none;
+  text-align: justify;
+}
+
+.heading5 a:hover{
+  font-size: 14px;
+  color: rgb(110, 110, 200);
+  font-weight: bold;
+  text-decoration: none;
+  text-align: justify;
+}
+
+
 .searchdata {
   font-size: 11px;
   color: rgb(0, 0, 0);

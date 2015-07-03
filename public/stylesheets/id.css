@@ -80,6 +80,20 @@
   transition:all 0.5s ease;
 }
 
+#word-box a{
+  color: rgb(0, 210, 255);
+  font-weight: normal;
+  text-decoration: none;
+  transition:all .3s ease;
+}
+
+#word-box a:hover{
+  color: rgb(0, 115, 205);
+  font-weight: normal;
+  text-decoration: underline;
+  transition:all .3s ease;
+}
+
 #word-box-del {
   clear:both;
   display:none;
@@ -96,6 +110,16 @@
 
 #word-box-del a{
   color: rgb(255, 0, 0);
+  font-weight: normal;
+  text-decoration: none;
+  transition:all .3s ease;
+}
+
+#word-box-del a:hover{
+  color: rgb(255, 255, 255);
+  font-weight: normal;
+  text-decoration: underline;
+  transition:all .3s ease;
 }
 
 #addword-box:hover {

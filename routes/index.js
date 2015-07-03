@@ -50,6 +50,11 @@ router.post('/words', function(req, res, next) {
 
         var pearsonResult = functions.pearsonData(definitionPearson);
         if(pearsonResult){
+          if(pearsonResult.headword){
+            var pearsonHW = pearsonResult.headword;
+          } else {
+            var pearsonHW = "No pronunciation data."
+          }
           if(pearsonResult.ipa){
             var pearsonIPA = pearsonResult.ipa;
           } else {
@@ -123,19 +128,19 @@ router.post('/words', function(req, res, next) {
             };
 
           if(!currentUser || currentUser === 'new'){
-              res.render('words/index', { word: theWord, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: 'new'});
+              res.render('words/index', { word: theWord, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: 'new'});
           } else {
             userCollection.findOne({username: currentUser}, function(err, dataset){
-              res.render('words/index', { word: theWord, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: currentUser, data: dataset });
+              res.render('words/index', { word: theWord, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: currentUser, data: dataset });
             });
           }
         } else {
           if(!currentUser || currentUser === 'new'){
-            res.render('words/index', { word: theWord, ipa: pearsonIPA, errorMsg: "Word not located in thesaurus.(006)" });
+            res.render('words/index', { word: theWord, headword: pearsonHW, ipa: pearsonIPA, errorMsg: "Word not located in thesaurus.(006)" });
           } else {
             userCollection.findOne({username: currentUser}, function(err, dataset){
               theWord = functions.toProperCase(theWord);
-              res.render('words/index', { word: theWord, ipa: pearsonIPA, currentUser: currentUser, data: dataset, errorMsg: "Word not located in thesaurus.(007)" });
+              res.render('words/index', { word: theWord, headword: pearsonHW, ipa: pearsonIPA, currentUser: currentUser, data: dataset, errorMsg: "Word not located in thesaurus.(007)" });
             });
           }
         }
@@ -164,6 +169,11 @@ router.get('/words/:word', function(req, res, next){
 
         var pearsonResult = functions.pearsonData(definitionPearson);
         if(pearsonResult){
+          if(pearsonResult.headword){
+            var pearsonHW = pearsonResult.headword;
+          } else {
+            var pearsonHW = "No pronunciation data."
+          }
           if(pearsonResult.ipa){
             var pearsonIPA = pearsonResult.ipa;
           } else {
@@ -190,7 +200,7 @@ router.get('/words/:word', function(req, res, next){
 
         var cookieUser = req.cookies.user;
         if(!cookieUser){
-          res.render('words/index', { word: theWord, ipa: pearsonIPA, payload: thesaurusObj, currentUser: 'new' });
+          res.render('words/index', { word: theWord, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, currentUser: 'new' });
         }
 
         var definitions = functions.defCollect(wordNikDef,pearsonDef);
@@ -205,11 +215,11 @@ router.get('/words/:word', function(req, res, next){
             //   ipa: pearsonIPA
             // },
             // { upsert: true });
-          res.render('words/index', { word: theWord, ipa: pearsonIPA, payload: thesaurusObj, data: dataset, currentUser: cookieUser, definition: definitions});
+          res.render('words/index', { word: theWord, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, data: dataset, currentUser: cookieUser, definition: definitions});
           });
         } else if(cookieUser && notavail == 1){
           userCollection.findOne({username: cookieUser}, function(err, dataset){
-          res.render('words/index', { word: theWord, ipa: pearsonIPA, payload: thesaurusObj, data: dataset, currentUser: cookieUser, errorMsg: 'Word not located in thesaurus.(009)', definition: definitions});
+          res.render('words/index', { word: theWord, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, data: dataset, currentUser: cookieUser, errorMsg: 'Word not located in thesaurus.(009)', definition: definitions});
           });
         }
       });

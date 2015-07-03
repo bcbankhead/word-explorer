@@ -13,7 +13,12 @@ p
         else
             a(href="/addword/" + word,  id="addword", title="add word to your list?") #{word}
     .heading5
-      |#{ipa}
+      |[r]: 
+      a(href="/words/" + headword) #{headword} 
+      |[ipa]: #{ipa}
+      br
+      
+      
     if definition
       for item in definition
         .heading4 #{item}

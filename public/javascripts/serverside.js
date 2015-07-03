@@ -50,11 +50,14 @@ module.exports = {
     if(data){
       if(data.results){
         if(data.results.length > 0){
+          if(data.results[0].headword){
+            result.headword = data.results[0].headword
+          }
           if(data.results[0].pronunciations){
             if(data.results[0].pronunciations.length > 0){
               if(data.results[0].pronunciations[0].ipa){
                 result.ipa = data.results[0].pronunciations[0].ipa;
-                console.log("IPAIPAIPA***********",result.ipa);
+                // console.log("IPAIPAIPA***********",result.ipa);
               }
             }
           }
@@ -62,7 +65,7 @@ module.exports = {
             if(data.results[0].senses[0].definition){
               var pearsonDef = data.results[0].senses[0].definition[0];
               result.definition = data.results[0].senses[0].definition[0];
-              console.log("DEFDEFDEF***********",result.definition);
+              // console.log("DEFDEFDEF***********",result.definition);
             }
           }
         }
@@ -100,18 +103,25 @@ module.exports = {
       obj.size = 1;
       obj.imports = [];
       for (var i =0; i < typeArray.length;i++){
-        typeArray[i] = typeArray[i].replace(/\s/g,"-");
-        obj.imports.push("words." + base + "." + typeArray[i])
+        if(typeArray[i].indexOf(" ") <= 0 && typeArray[i].indexOf("-") <= 0){
+          obj.imports.push("words." + base + "." + typeArray[i])
+        } else {
+          continue;
+        }
       }
       words.push(obj);
 
       for (var i =0; i < typeArray.length;i++){
-        var obj = {}
-        typeArray[i] = typeArray[i].replace(/\s/g,"-");
-        obj.name = "words." + base + "." + typeArray[i];
-        obj.size = 1;
-        obj.imports = []
-        words.push(obj);
+        if(typeArray[i].indexOf(" ") <= 0 && typeArray[i].indexOf("-") <= 0){
+          var obj = {}
+          typeArray[i] = typeArray[i].replace(/\s/g,"-");
+          obj.name = "words." + base + "." + typeArray[i];
+          obj.size = 1;
+          obj.imports = []
+          words.push(obj);
+        } else {
+          continue;
+        }
       }
     };
 
