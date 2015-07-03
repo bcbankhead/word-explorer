@@ -5,6 +5,7 @@ var unirest = require('unirest');
 var router = express.Router();
 var db = require('monk')(process.env.MONGOLAB_URI);
 var userCollection = db.get('words_users');
+var wordCollection = db.get('words_words');
 
 var api1 = (process.env.wordnik);
 var api2 = (process.env.dictionary);
@@ -46,10 +47,19 @@ router.post('/words', function(req, res, next) {
   functions.getData(thesaurusAPI, function(thesaurusResult){
     functions.getData(wordNikAPI, function(definition){
       functions.getData(pearsonAPI, function(definitionPearson){
-        var pearsonDef = functions.pearsonData(definitionPearson);
-          if(pearsonDef){
+
+        var pearsonResult = functions.pearsonData(definitionPearson);
+        if(pearsonResult){
+          if(pearsonResult.ipa){
+            var pearsonIPA = pearsonResult.ipa;
+          } else {
+            var pearsonIPA = "No pronunciation data."
+          }
+          if(pearsonResult.definition){
+            var pearsonDef = pearsonResult.definition;
             pearsonDef = functions.toProperCase(pearsonDef);
           }
+        }
 
         if(definition){
           if(definition.length > 0){
@@ -72,10 +82,10 @@ router.post('/words', function(req, res, next) {
           if(currentUser != 'new' || currentUser != null){
             userCollection.findOne({username: currentUser}, function(err, dataset){
               theWord = functions.toProperCase(theWord);
-              res.render('words/index', { word: theWord, currentUser: currentUser, data: dataset, errorMsg: "No records found in thesaurus.(002)" });
+              res.render('words/index', { word: theWord, ipa: pearsonIPA, currentUser: currentUser, data: dataset, errorMsg: "No records found in thesaurus.(002)" });
             });
           } else {
-            res.render('words/index', { word: theWord, errorMsg: "No records found in thesaurus.(003)" });
+            res.render('words/index', { word: theWord, ipa: pearsonIPA, errorMsg: "No records found in thesaurus.(003)" });
           }
         }
 
@@ -85,6 +95,14 @@ router.post('/words', function(req, res, next) {
         theWord = functions.toProperCase(theWord);
         if (theWord.length > 0 && notavail === 0){
           if (currentUser !== 'new' || currentUser != '' || currentUser != null){
+
+            // wordCollection.update(
+            // { word: theWord },
+            // {
+            //   word: theWord,
+            //   ipa: pearsonIPA
+            // },
+            // { upsert: true });
 
             userCollection.update(
             { username: currentUser },
@@ -105,21 +123,94 @@ router.post('/words', function(req, res, next) {
             };
 
           if(!currentUser || currentUser === 'new'){
-              res.render('words/index', { word: theWord, payload: thesaurusObj, definition: definitions, currentUser: 'new'});
+              res.render('words/index', { word: theWord, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: 'new'});
           } else {
             userCollection.findOne({username: currentUser}, function(err, dataset){
-              res.render('words/index', { word: theWord, payload: thesaurusObj, definition: definitions, currentUser: currentUser, data: dataset });
+              res.render('words/index', { word: theWord, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: currentUser, data: dataset });
             });
           }
         } else {
           if(!currentUser || currentUser === 'new'){
-            res.render('words/index', { word: theWord, errorMsg: "Word not located in thesaurus.(006)" });
+            res.render('words/index', { word: theWord, ipa: pearsonIPA, errorMsg: "Word not located in thesaurus.(006)" });
           } else {
             userCollection.findOne({username: currentUser}, function(err, dataset){
               theWord = functions.toProperCase(theWord);
-              res.render('words/index', { word: theWord, currentUser: currentUser, data: dataset, errorMsg: "Word not located in thesaurus.(007)" });
+              res.render('words/index', { word: theWord, ipa: pearsonIPA, currentUser: currentUser, data: dataset, errorMsg: "Word not located in thesaurus.(007)" });
             });
           }
+        }
+      });
+    });
+  });
+});
+
+//Explorer: Display Word
+router.get('/words/:word', function(req, res, next){
+  var theWord = req.params.word.replace(/\-/g," ");
+  theWord = theWord.toLowerCase();
+  var thesaurusObj = {};
+  var notavail = 0;
+  var wordNikAPI = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/definitions?limit=200&includeRelated=true&sourceDictionaries=ahd&useCanonical=false&includeTags=false&api_key=" + api1;
+  var synonymsAPI = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/relatedWords?useCanonical=false&relationshipTypes=synonym&limitPerRelationshipType=10&api_key=" + api1;
+  var entomologyAPI = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/etymologies?useCanonical=false&api_key=" + api1;
+  var dictionaryAPI = "http://www.dictionaryapi.com/api/v1/references/thesaurus/xml/" + theWord + "?key=" + api2;
+  var thesaurusAPI = "http://words.bighugelabs.com/api/2/" + api3 + "/" + theWord + "/json";
+  var pearsonAPI = "https://api.pearson.com/v2/dictionaries/ldoce5/entries?headword=" + theWord + "&apikey=" + api4;
+  //var yandexAPI = "https://api.pearson.com/v2/dictionaries/ldoce5/entries?headword=" + theWord + "&apikey=" + api4;
+
+  functions.getData(thesaurusAPI, function(thesaurusResult){
+    functions.getData(wordNikAPI, function(definition){
+      functions.getData(pearsonAPI, function(definitionPearson){
+
+        var pearsonResult = functions.pearsonData(definitionPearson);
+        if(pearsonResult){
+          if(pearsonResult.ipa){
+            var pearsonIPA = pearsonResult.ipa;
+          } else {
+            var pearsonIPA = "No pronunciation data."
+          }
+          if(pearsonResult.definition){
+            var pearsonDef = pearsonResult.definition;
+            pearsonDef = functions.toProperCase(pearsonDef);
+          }
+        }
+
+        if(definition.length > 0){
+          var wordNikDef = functions.parseWordNik(definition);
+        }
+
+        if (thesaurusResult != undefined){
+          thesaurusResult = JSON.parse(thesaurusResult);
+          thesaurusObj = functions.trParse(theWord,thesaurusResult);
+          thesaurusObj = JSON.stringify(thesaurusObj)
+          notavail = 0;
+        } else if (thesaurusResult === undefined) {
+          notavail = 1;
+        }
+
+        var cookieUser = req.cookies.user;
+        if(!cookieUser){
+          res.render('words/index', { word: theWord, ipa: pearsonIPA, payload: thesaurusObj, currentUser: 'new' });
+        }
+
+        var definitions = functions.defCollect(wordNikDef,pearsonDef);
+
+        theWord = functions.toProperCase(theWord);
+        if(cookieUser && notavail == 0){
+          userCollection.findOne({username: cookieUser}, function(err, dataset){
+            // wordCollection.update(
+            // { word: theWord },
+            // {
+            //   word: theWord,
+            //   ipa: pearsonIPA
+            // },
+            // { upsert: true });
+          res.render('words/index', { word: theWord, ipa: pearsonIPA, payload: thesaurusObj, data: dataset, currentUser: cookieUser, definition: definitions});
+          });
+        } else if(cookieUser && notavail == 1){
+          userCollection.findOne({username: cookieUser}, function(err, dataset){
+          res.render('words/index', { word: theWord, ipa: pearsonIPA, payload: thesaurusObj, data: dataset, currentUser: cookieUser, errorMsg: 'Word not located in thesaurus.(009)', definition: definitions});
+          });
         }
       });
     });
@@ -201,62 +292,6 @@ router.get('/delete/:word', function(req, res, next) {
   }
 });
 
-//Explorer: Display Word
-router.get('/words/:word', function(req, res, next){
-  var theWord = req.params.word.replace(/\-/g," ");
-  theWord = theWord.toLowerCase();
-  var thesaurusObj = {};
-  var notavail = 0;
-  var wordNikAPI = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/definitions?limit=200&includeRelated=true&sourceDictionaries=ahd&useCanonical=false&includeTags=false&api_key=" + api1;
-  var synonymsAPI = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/relatedWords?useCanonical=false&relationshipTypes=synonym&limitPerRelationshipType=10&api_key=" + api1;
-  var entomologyAPI = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/etymologies?useCanonical=false&api_key=" + api1;
-  var dictionaryAPI = "http://www.dictionaryapi.com/api/v1/references/thesaurus/xml/" + theWord + "?key=" + api2;
-  var thesaurusAPI = "http://words.bighugelabs.com/api/2/" + api3 + "/" + theWord + "/json";
-  var pearsonAPI = "https://api.pearson.com/v2/dictionaries/ldoce5/entries?headword=" + theWord + "&apikey=" + api4;
-  //var yandexAPI = "https://api.pearson.com/v2/dictionaries/ldoce5/entries?headword=" + theWord + "&apikey=" + api4;
-
-  functions.getData(thesaurusAPI, function(thesaurusResult){
-    functions.getData(wordNikAPI, function(definition){
-      functions.getData(pearsonAPI, function(definitionPearson){
-        var pearsonDef = functions.pearsonData(definitionPearson);
-          if(pearsonDef){
-            pearsonDef = functions.toProperCase(pearsonDef);
-          }
-
-        if(definition.length > 0){
-          var wordNikDef = functions.parseWordNik(definition);
-        }
-
-        if (thesaurusResult != undefined){
-          thesaurusResult = JSON.parse(thesaurusResult);
-          thesaurusObj = functions.trParse(theWord,thesaurusResult);
-          thesaurusObj = JSON.stringify(thesaurusObj)
-          notavail = 0;
-        } else if (thesaurusResult === undefined) {
-          notavail = 1;
-        }
-
-        var cookieUser = req.cookies.user;
-        if(!cookieUser){
-          res.render('words/index', { word: theWord, payload: thesaurusObj, currentUser: 'new' });
-        }
-
-        var definitions = functions.defCollect(wordNikDef,pearsonDef);
-
-        theWord = functions.toProperCase(theWord);
-        if(cookieUser && notavail == 0){
-          userCollection.findOne({username: cookieUser}, function(err, dataset){
-          res.render('words/index', { word: theWord, payload: thesaurusObj, data: dataset, currentUser: cookieUser, definition: definitions});
-          });
-        } else if(cookieUser && notavail == 1){
-          userCollection.findOne({username: cookieUser}, function(err, dataset){
-          res.render('words/index', { word: theWord, payload: thesaurusObj, data: dataset, currentUser: cookieUser, errorMsg: 'Word not located in thesaurus.(009)', definition: definitions});
-          });
-        }
-      });
-    });
-  });
-});
 
 //Signup
 router.post('/signup', function(req, res, next){
