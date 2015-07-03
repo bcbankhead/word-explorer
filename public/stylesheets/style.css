@@ -157,29 +157,6 @@ a {
   height: 28px;
   display:inline-block;
 }
-#back {
-  margin-top:4px;
-  display:inline-block;
-  background-color: rgb(115, 0, 0);
-  width: 25px;
-  height: 18px;
-  border: 1px solid black;
-  box-sizing: border-box;
-  text-align: center;
-}
-
-#back:hover {
-  margin-top:4px;
-  cursor:pointer;
-  display:inline-block;
-  background-color: rgb(255, 0, 0);
-  width: 25px;
-  height: 18px;
-  border: 1px solid black;
-  box-sizing: border-box;
-  text-align: center;
-  transition:all 0.3s ease;
-}
 
 .discovered {
   vertical-align: top;

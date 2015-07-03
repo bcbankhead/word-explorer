@@ -14,6 +14,7 @@
 }
 
 .search {
+  position:relative;
   float:left;
   display: inline-block;
   width: 300px;

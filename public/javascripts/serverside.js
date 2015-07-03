@@ -46,7 +46,6 @@ module.exports = {
 
   pearsonData: function(data){
     var result = {};
-
     if(data){
       if(data.results){
         if(data.results.length > 0){
@@ -61,11 +60,13 @@ module.exports = {
               }
             }
           }
-          if(data.results[0].senses.length > 0){
-            if(data.results[0].senses[0].definition){
-              var pearsonDef = data.results[0].senses[0].definition[0];
-              result.definition = data.results[0].senses[0].definition[0];
-              // console.log("DEFDEFDEF***********",result.definition);
+          if(data.results[0].senses != null){
+            if(data.results[0].senses.length > 0){
+              if(data.results[0].senses[0].definition){
+                var pearsonDef = data.results[0].senses[0].definition[0];
+                result.definition = data.results[0].senses[0].definition[0];
+                // console.log("DEFDEFDEF***********",result.definition);
+              }
             }
           }
         }

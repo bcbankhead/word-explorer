@@ -1,11 +1,16 @@
 p
   if word
     .backlabel
-      |Back
+      |Hist.
     .discoveredlabel  
       |Showing Chord Chart for:
     .backcenter
       #back
+    #recentWords
+      if recent
+        for item in recent
+          .heading5
+            a(href="/words/" + item) #{item}
     .discovered
       .heading2 
         if errorMsg
@@ -14,7 +19,10 @@ p
             a(href="/addword/" + word,  id="addword", title="add word to your list?") #{word}
     .heading5
       |[r]: 
-      a(href="/words/" + headword) #{headword} 
+      if headword != "n/a"
+        a(href="/words/" + headword) #{headword} 
+      else
+        |n/a 
       |[ipa]: #{ipa}
       br
       

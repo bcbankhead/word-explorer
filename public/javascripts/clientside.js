@@ -212,15 +212,15 @@ d3.select("#node-adjective")
 
 }
 
-if (document.getElementById('node-general')){
-var nodes = document.getElementById('node-general')
-nodes.children[0].setAttribute('fill', '#00DDFF')
-nodes.children[0].setAttribute('font-weight', 'bold')
-nodes.children[0].setAttribute('font-size', '24px')
-nodes.removeAttribute('cursor');
-d3.select("#node-general")
-  .on('click', null);
-}
+// if (document.getElementById('node-general')){
+// var nodes = document.getElementById('node-general')
+// nodes.children[0].setAttribute('fill', '#00DDFF')
+// nodes.children[0].setAttribute('font-weight', 'bold')
+// nodes.children[0].setAttribute('font-size', '24px')
+// nodes.removeAttribute('cursor');
+// d3.select("#node-general")
+//   .on('click', null);
+// }
 
 if (document.getElementById('addword')){
   var addWord = document.getElementById('addword');
@@ -236,10 +236,27 @@ if (document.getElementById('addword')){
   })
 }
 
+//document.getElementById('recentWords').style.opacity = 0;
+var recentWords = document.getElementById('recentWords')
+var recentWordsOn = 0;
+
+window.addEventListener('click', function(){
+    recentWords.style.opacity = 0;
+    recentWords.style.zIndex = 0;
+})
+
 if (document.getElementById('back')){
   var back = document.getElementById('back')
-    back.addEventListener('click', function(){
-    window.history.go(-1);
+  back.addEventListener('mouseover', function(){
+      recentWords.style.opacity = 1;
+      recentWords.style.zIndex = 9999;
+  })
+
+  recentWords.addEventListener('mouseleave', function(){
+    console.log("wtf");
+    recentWordsOn = 0;
+    recentWords.style.opacity = 0;
+    recentWords.style.zIndex = 0;
   })
 }
 

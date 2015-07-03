@@ -198,3 +198,48 @@
   width:100%;
   transition:all 2s ease;
 }
+
+#recentWords {
+  position:absolute;
+  opacity: 0;
+  padding-top:10px;
+  padding-left:15px;
+  margin-left: -190px;
+  top:157px;
+  border:1px solid black;
+  width: 150px;
+  min-height:200px;
+  max-height: 400px;
+  overflow:scroll;
+  background-color: rgb(255, 255, 255);
+  box-sizing: border-box;
+  transition:all .3s ease;
+}
+
+/*#recentWords a{
+  color: rgb(255, 0, 0);
+}*/
+
+#back {
+  margin-top:4px;
+  display:inline-block;
+  background-color: rgb(115, 0, 0);
+  width: 25px;
+  height: 18px;
+  border: 1px solid black;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+#back:hover {
+  margin-top:4px;
+  /*cursor:pointer;*/
+  display:inline-block;
+  background-color: rgb(255, 0, 0);
+  width: 25px;
+  height: 18px;
+  border: 1px solid black;
+  box-sizing: border-box;
+  text-align: center;
+  transition:all 0.3s ease;
+}

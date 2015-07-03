@@ -32,6 +32,20 @@ router.post('/words', function(req, res, next) {
   var currentUser = req.cookies.user;
   var theWord = req.body.word.replace(/\-/g," ");
       theWord = theWord.toLowerCase();
+  var recent = req.cookies.recent;
+      if(!recent){
+        recent = theWord;
+      };
+
+  var recentList = recent.split(/\,/);
+
+  if(recentList.length >= 1){
+    if(theWord != recentList[recentList.length -1]){
+      recent += "," + theWord;
+      recentList.push(theWord);
+    }
+  };
+
   var notavail = 0;
   var thesaurusObj = {};
   var definitions = {};
@@ -53,12 +67,12 @@ router.post('/words', function(req, res, next) {
           if(pearsonResult.headword){
             var pearsonHW = pearsonResult.headword;
           } else {
-            var pearsonHW = "No pronunciation data."
+            var pearsonHW = "n/a"
           }
           if(pearsonResult.ipa){
             var pearsonIPA = pearsonResult.ipa;
           } else {
-            var pearsonIPA = "No pronunciation data."
+            var pearsonIPA = "n/a"
           }
           if(pearsonResult.definition){
             var pearsonDef = pearsonResult.definition;
@@ -73,7 +87,8 @@ router.post('/words', function(req, res, next) {
         } else {
           userCollection.findOne({username: currentUser}, function(err, dataset){
             theWord = functions.toProperCase(theWord);
-            res.render('words/index', { word: theWord, currentUser: currentUser, data: dataset, errorMsg: "Word field is blank.(001)" });
+            res.cookie('recent', recent)
+            res.render('words/index', { word: theWord, recent: recentList, currentUser: currentUser, data: dataset, errorMsg: "Word field is blank.(001)" });
           });
         }
 
@@ -87,10 +102,12 @@ router.post('/words', function(req, res, next) {
           if(currentUser != 'new' || currentUser != null){
             userCollection.findOne({username: currentUser}, function(err, dataset){
               theWord = functions.toProperCase(theWord);
-              res.render('words/index', { word: theWord, ipa: pearsonIPA, currentUser: currentUser, data: dataset, errorMsg: "No records found in thesaurus.(002)" });
+              res.cookie('recent', recent)
+              res.render('words/index', { word: theWord, recent: recentList, ipa: pearsonIPA, currentUser: currentUser, data: dataset, errorMsg: "No records found in thesaurus.(002)" });
             });
           } else {
-            res.render('words/index', { word: theWord, ipa: pearsonIPA, errorMsg: "No records found in thesaurus.(003)" });
+            res.cookie('recent', recent)
+            res.render('words/index', { word: theWord, recent: recentList, ipa: pearsonIPA, errorMsg: "No records found in thesaurus.(003)" });
           }
         }
 
@@ -128,19 +145,23 @@ router.post('/words', function(req, res, next) {
             };
 
           if(!currentUser || currentUser === 'new'){
-              res.render('words/index', { word: theWord, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: 'new'});
+              res.cookie('recent', recent)
+              res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: 'new'});
           } else {
             userCollection.findOne({username: currentUser}, function(err, dataset){
-              res.render('words/index', { word: theWord, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: currentUser, data: dataset });
+              res.cookie('recent', recent)
+              res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: currentUser, data: dataset });
             });
           }
         } else {
           if(!currentUser || currentUser === 'new'){
-            res.render('words/index', { word: theWord, headword: pearsonHW, ipa: pearsonIPA, errorMsg: "Word not located in thesaurus.(006)" });
+            res.cookie('recent', recent)
+            res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, errorMsg: "Word not located in thesaurus.(006)" });
           } else {
             userCollection.findOne({username: currentUser}, function(err, dataset){
               theWord = functions.toProperCase(theWord);
-              res.render('words/index', { word: theWord, headword: pearsonHW, ipa: pearsonIPA, currentUser: currentUser, data: dataset, errorMsg: "Word not located in thesaurus.(007)" });
+              res.cookie('recent', recent)
+              res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, currentUser: currentUser, data: dataset, errorMsg: "Word not located in thesaurus.(007)" });
             });
           }
         }
@@ -152,7 +173,20 @@ router.post('/words', function(req, res, next) {
 //Explorer: Display Word
 router.get('/words/:word', function(req, res, next){
   var theWord = req.params.word.replace(/\-/g," ");
-  theWord = theWord.toLowerCase();
+      theWord = theWord.toLowerCase();
+  var recent = req.cookies.recent;
+      if(!recent){
+        recent = theWord;
+      };
+
+  var recentList = recent.split(/\,/);
+
+  if(recentList.length >= 1){
+    if(theWord != recentList[recentList.length -1]){
+      recent += "," + theWord;
+      recentList.push(theWord);
+    }
+  };
   var thesaurusObj = {};
   var notavail = 0;
   var wordNikAPI = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/definitions?limit=200&includeRelated=true&sourceDictionaries=ahd&useCanonical=false&includeTags=false&api_key=" + api1;
@@ -172,12 +206,12 @@ router.get('/words/:word', function(req, res, next){
           if(pearsonResult.headword){
             var pearsonHW = pearsonResult.headword;
           } else {
-            var pearsonHW = "No pronunciation data."
+            var pearsonHW = "n/a"
           }
           if(pearsonResult.ipa){
             var pearsonIPA = pearsonResult.ipa;
           } else {
-            var pearsonIPA = "No pronunciation data."
+            var pearsonIPA = "n/a"
           }
           if(pearsonResult.definition){
             var pearsonDef = pearsonResult.definition;
@@ -200,7 +234,8 @@ router.get('/words/:word', function(req, res, next){
 
         var cookieUser = req.cookies.user;
         if(!cookieUser){
-          res.render('words/index', { word: theWord, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, currentUser: 'new' });
+          res.cookie('recent', recent)
+          res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, currentUser: 'new' });
         }
 
         var definitions = functions.defCollect(wordNikDef,pearsonDef);
@@ -215,11 +250,13 @@ router.get('/words/:word', function(req, res, next){
             //   ipa: pearsonIPA
             // },
             // { upsert: true });
-          res.render('words/index', { word: theWord, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, data: dataset, currentUser: cookieUser, definition: definitions});
+          res.cookie('recent', recent)
+          res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, data: dataset, currentUser: cookieUser, definition: definitions});
           });
         } else if(cookieUser && notavail == 1){
           userCollection.findOne({username: cookieUser}, function(err, dataset){
-          res.render('words/index', { word: theWord, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, data: dataset, currentUser: cookieUser, errorMsg: 'Word not located in thesaurus.(009)', definition: definitions});
+          res.cookie('recent', recent)
+          res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, data: dataset, currentUser: cookieUser, errorMsg: 'Word not located in thesaurus.(009)', definition: definitions});
           });
         }
       });
