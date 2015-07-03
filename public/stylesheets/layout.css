@@ -3,7 +3,6 @@
   border:1px solid black;
   width: 90%;
   margin:0 auto;
-  height:90%;
   overflow:hidden;
   padding:0px;
   box-sizing: border-box;
@@ -18,12 +17,13 @@
   float:left;
   display: inline-block;
   width: 300px;
-  height:750px;
-  fot-size:18px;
+  font-size:18px;
   vertical-align: top;
   box-sizing: border-box;
   padding-left: 25px;
   margin:0px;
+  margin-bottom: -9999px;
+  padding-bottom: 9999px;
   border-left:1px dotted black;
 }
 
