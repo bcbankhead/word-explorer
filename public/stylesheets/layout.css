@@ -7,11 +7,6 @@
   padding:0px;
   box-sizing: border-box;
 }
-.width {
-  width:700px;
-  height:20px;
-  border:1px solid black;
-}
 
 .search {
   position:relative;

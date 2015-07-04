@@ -44,9 +44,16 @@ router.post('/words', function(req, res, next) {
       recent += "," + theWord;
       recentList.push(theWord);
     }
+    //I fuckin cheated to get this...
+    function onlyUnique(value, index, self) {  //straight up cheated
+      return self.indexOf(value) === index;
+    }
+    var unique = recentList.filter(onlyUnique);
+    recentList = unique;
   };
 
   var notavail = 0;
+  var defAvail = 0;
   var thesaurusObj = {};
   var definitions = {};
 
@@ -58,116 +65,105 @@ router.post('/words', function(req, res, next) {
   var pearsonAPI = "https://api.pearson.com/v2/dictionaries/ldoce5/entries?headword=" + theWord + "&apikey=" + api4;
   //var yandexAPI = "https://api.pearson.com/v2/dictionaries/ldoce5/entries?headword=" + theWord + "&apikey=" + api4;
 
-  functions.getData(thesaurusAPI, function(thesaurusResult){
-    functions.getData(wordNikAPI, function(definition){
-      functions.getData(pearsonAPI, function(definitionPearson){
+    functions.getData(thesaurusAPI, function(thesaurusResult){
+      functions.getData(wordNikAPI, function(definition){
+        functions.getData(pearsonAPI, function(definitionPearson){
 
-        var pearsonResult = functions.pearsonData(definitionPearson);
-        if(pearsonResult){
-          if(pearsonResult.headword){
-            var pearsonHW = pearsonResult.headword;
+          var pearsonResult = functions.pearsonData(definitionPearson);
+          if(pearsonResult){
+            if(pearsonResult.headword){
+              var pearsonHW = pearsonResult.headword;
+            } else {
+              var pearsonHW = "n/a"
+              defAvail += 1;
+            }
+            if(pearsonResult.ipa){
+              var pearsonIPA = pearsonResult.ipa;
+            } else {
+              var pearsonIPA = "n/a"
+            }
+            if(pearsonResult.definition){
+              var pearsonDef = pearsonResult.definition;
+              pearsonDef = functions.toProperCase(pearsonDef);
+            }
+          }
+
+          if(definition && definition !== undefined){
+            if(definition.length > 0){
+              var wordNikDef = functions.parseWordNik(definition);
+            }
+          }
+
+          if (thesaurusResult != undefined){
+            thesaurusResult = JSON.parse(thesaurusResult);
+            thesaurusObj = functions.trParse(theWord,thesaurusResult);
+            thesaurusObj = JSON.stringify(thesaurusObj)
+            notavail = 0;
+          } else if (thesaurusResult === undefined) {
+            notavail = 1;
+          }
+
+          var definitions = functions.defCollect(wordNikDef,pearsonDef);
+
+          //Write dataEntry for Database
+          theWord = functions.toProperCase(theWord);
+          if (theWord.length > 0 && notavail === 0){
+            if (currentUser !== 'new' || currentUser != '' || currentUser != null){
+
+              // wordCollection.update(
+              // { word: theWord },
+              // {
+              //   word: theWord,
+              //   ipa: pearsonIPA
+              // },
+              // { upsert: true });
+
+              userCollection.update(
+              { username: currentUser },
+              { $pull: { words: theWord } },
+              { upsert: true });
+
+              userCollection.update(
+              { username: currentUser },
+              { $pull: { words: '' } },
+              { upsert: true });
+
+              userCollection.update(
+              { username: currentUser },
+              { $push: { words: theWord } },
+              { upsert: true });
+
+              userCollection.update(
+              { username: currentUser },
+              { $push: { words: { $each: [ ], $sort: 1 } } },
+              { upsert: true });
+
+              };
+
+            if(!currentUser || currentUser === 'new'){
+                res.cookie('recent', recent)
+                res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: 'new'});
+            } else {
+              userCollection.findOne({username: currentUser}, function(err, dataset){
+                res.cookie('recent', recent)
+                res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: currentUser, data: dataset });
+              });
+            }
           } else {
-            var pearsonHW = "n/a"
-          }
-          if(pearsonResult.ipa){
-            var pearsonIPA = pearsonResult.ipa;
-          } else {
-            var pearsonIPA = "n/a"
-          }
-          if(pearsonResult.definition){
-            var pearsonDef = pearsonResult.definition;
-            pearsonDef = functions.toProperCase(pearsonDef);
-          }
-        }
-
-        if(definition){
-          if(definition.length > 0){
-            var wordNikDef = functions.parseWordNik(definition);
-          }
-        } else {
-          userCollection.findOne({username: currentUser}, function(err, dataset){
-            theWord = functions.toProperCase(theWord);
-            res.cookie('recent', recent)
-            res.render('words/index', { word: theWord, recent: recentList, currentUser: currentUser, data: dataset, errorMsg: "Word field is blank.(001)" });
-          });
-        }
-
-        if (thesaurusResult != undefined){
-          thesaurusResult = JSON.parse(thesaurusResult);
-          thesaurusObj = functions.trParse(theWord,thesaurusResult);
-          thesaurusObj = JSON.stringify(thesaurusObj)
-          notavail = 0;
-        } else if (thesaurusResult == undefined) {
-          notavail = 1;
-          if(currentUser != 'new' || currentUser != null){
-            userCollection.findOne({username: currentUser}, function(err, dataset){
-              theWord = functions.toProperCase(theWord);
+            if(!currentUser || currentUser === 'new'){
               res.cookie('recent', recent)
-              res.render('words/index', { word: theWord, recent: recentList, ipa: pearsonIPA, currentUser: currentUser, data: dataset, errorMsg: "No records found in thesaurus.(002)" });
-            });
-          } else {
-            res.cookie('recent', recent)
-            res.render('words/index', { word: theWord, recent: recentList, ipa: pearsonIPA, errorMsg: "No records found in thesaurus.(003)" });
+              res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, errorMsg: "Word not located in thesaurus.(006)" });
+            } else {
+              userCollection.findOne({username: currentUser}, function(err, dataset){
+                theWord = functions.toProperCase(theWord);
+                res.cookie('recent', recent)
+                res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, currentUser: currentUser, data: dataset, errorMsg: "Word not located in thesaurus.(007)" });
+              });
+            }
           }
-        }
-
-        var definitions = functions.defCollect(wordNikDef,pearsonDef);
-
-        //Write dataEntry for Database
-        theWord = functions.toProperCase(theWord);
-        if (theWord.length > 0 && notavail === 0){
-          if (currentUser !== 'new' || currentUser != '' || currentUser != null){
-
-            // wordCollection.update(
-            // { word: theWord },
-            // {
-            //   word: theWord,
-            //   ipa: pearsonIPA
-            // },
-            // { upsert: true });
-
-            userCollection.update(
-            { username: currentUser },
-            { $pull: { words: theWord } });
-
-            userCollection.update(
-            { username: currentUser },
-            { $pull: { words: '' } });
-
-            userCollection.update(
-            { username: currentUser },
-            { $push: { words: theWord }});
-
-            userCollection.update(
-            { username: currentUser },
-            { $push: { words: { $each: [ ], $sort: 1 } } });
-
-            };
-
-          if(!currentUser || currentUser === 'new'){
-              res.cookie('recent', recent)
-              res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: 'new'});
-          } else {
-            userCollection.findOne({username: currentUser}, function(err, dataset){
-              res.cookie('recent', recent)
-              res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: currentUser, data: dataset });
-            });
-          }
-        } else {
-          if(!currentUser || currentUser === 'new'){
-            res.cookie('recent', recent)
-            res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, errorMsg: "Word not located in thesaurus.(006)" });
-          } else {
-            userCollection.findOne({username: currentUser}, function(err, dataset){
-              theWord = functions.toProperCase(theWord);
-              res.cookie('recent', recent)
-              res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, currentUser: currentUser, data: dataset, errorMsg: "Word not located in thesaurus.(007)" });
-            });
-          }
-        }
+        });
       });
     });
-  });
 });
 
 //Explorer: Display Word
@@ -186,7 +182,14 @@ router.get('/words/:word', function(req, res, next){
       recent += "," + theWord;
       recentList.push(theWord);
     }
+    //I fuckin cheated to get this...
+    function onlyUnique(value, index, self) {  //straight up cheated
+      return self.indexOf(value) === index;
+    }
+    var unique = recentList.filter(onlyUnique);
+    recentList = unique;
   };
+
   var thesaurusObj = {};
   var notavail = 0;
   var wordNikAPI = "http://api.wordnik.com:80/v4/word.json/" + theWord + "/definitions?limit=200&includeRelated=true&sourceDictionaries=ahd&useCanonical=false&includeTags=false&api_key=" + api1;
@@ -205,13 +208,16 @@ router.get('/words/:word', function(req, res, next){
         if(pearsonResult){
           if(pearsonResult.headword){
             var pearsonHW = pearsonResult.headword;
+              if(pearsonHW.indexOf("-" > 0)){
+                pearsonHW = "n/a";
+              }
           } else {
-            var pearsonHW = "n/a"
+            var pearsonHW = "n/a";
           }
           if(pearsonResult.ipa){
             var pearsonIPA = pearsonResult.ipa;
           } else {
-            var pearsonIPA = "n/a"
+            var pearsonIPA = "n/a";
           }
           if(pearsonResult.definition){
             var pearsonDef = pearsonResult.definition;
@@ -284,19 +290,23 @@ router.get('/addword/:word', function(req, res, next) {
 
         userCollection.update(
         { username: currentUser },
-        { $pull: { words: theWord } });
+        { $pull: { words: theWord } },
+        { upsert: true });
 
         userCollection.update(
         { username: currentUser },
-        { $pull: { words: '' } });
+        { $pull: { words: '' } },
+        { upsert: true });
 
         userCollection.update(
         { username: currentUser },
-        { $push: { words: theWord }});
+        { $push: { words: theWord } },
+        { upsert: true });
 
         userCollection.update(
         { username: currentUser },
-        { $push: { words: { $each: [ ], $sort: 1 } } });
+        { $push: { words: { $each: [ ], $sort: 1 } } },
+        { upsert: true });
 
         res.redirect('/words/'+ theWord)
       };
@@ -381,7 +391,6 @@ router.get('/profiles/:id', function(req, res, next) {
       if (req.params.id != id) {
         res.redirect('/');
       } else {
-        console.log(dataset.words);
         res.render('profiles/index', {currentUser: cookieUser, data: dataset});
       }
     });

@@ -63,6 +63,7 @@
   background-color: rgb(255, 0, 0);
 }
 #sform {
+  position:relative;
   display:inline-block;
   border: 0px solid black;
 }
@@ -216,6 +217,19 @@
   transition:all .3s ease;
 }
 
+#disabled {
+  position:absolute;
+  opacity: .5;
+  margin-left: 200px;
+  top:5px;
+  border:1px solid black;
+  width:70px;
+  height:25px;
+  background-color: rgb(30, 30, 30);
+  box-sizing: border-box;
+  z-index: 0;
+  transition:all .3s ease;
+}
 /*#recentWords a{
   color: rgb(255, 0, 0);
 }*/
@@ -242,4 +256,9 @@
   box-sizing: border-box;
   text-align: center;
   transition:all 0.3s ease;
+}
+
+#width {
+  height:1px;
+  border:0px solid black;
 }

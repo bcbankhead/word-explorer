@@ -46,6 +46,7 @@ module.exports = {
 
   pearsonData: function(data){
     var result = {};
+    // console.log("pD",data);
     if(data){
       if(data.results){
         if(data.results.length > 0){
@@ -85,6 +86,7 @@ module.exports = {
   },
 
   parseWordNik: function(definition){
+    // console.log("wN",definition);
     if (definition.length > 0 || definition[0] != null || definition[0] != ''){
       var definition = definition[0].text;
     } else {
@@ -233,7 +235,7 @@ emailValidate: function(currentUser, password, confirm, duplicate){
     var userCollection = db.get('words_users');
 
     userCollection.find({username: currentUser}, function(err, user){
-      console.log(user.length);
+      // console.log(user.length);
       var duplicate = 0;
           if (user.length === 0){
             duplicate += 0

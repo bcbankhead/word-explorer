@@ -238,12 +238,44 @@ if (document.getElementById('addword')){
 
 //document.getElementById('recentWords').style.opacity = 0;
 var recentWords = document.getElementById('recentWords')
+var disabled = document.getElementById('disabled')
 var recentWordsOn = 0;
 
 window.addEventListener('click', function(){
     recentWords.style.opacity = 0;
     recentWords.style.zIndex = 0;
 })
+
+if(document.getElementById('word')){
+  var word = document.getElementById('word')
+  word.addEventListener('focus', function(){
+    if(word.value.length === 0){
+      document.getElementById('submit').disabled = true;
+      disabled.style.opacity = .5;
+      disabled.style.zIndex = 9999;
+    }
+  })
+
+  word.addEventListener('blur', function(){
+    if(word.value.length === 0){
+      document.getElementById('submit').disabled = true;
+      disabled.style.opacity = .5;
+      disabled.style.zIndex = 9999;
+    }
+  })
+
+  word.addEventListener('keyup', function(){
+    if(word.value.length > 0){
+      document.getElementById('submit').disabled = false;
+      disabled.style.opacity = 0;
+      disabled.style.zIndex = 0;
+    } else {
+      document.getElementById('submit').disabled = true;
+      disabled.style.opacity = .5;
+      disabled.style.zIndex = 9999;
+    }
+  })
+}
 
 if (document.getElementById('back')){
   var back = document.getElementById('back')
@@ -300,4 +332,6 @@ $( document ).ready(function() {
     status.style.backgroundColor = 'rgb(240,240,240)';
     })
   },500)
+  var width = document.getElementById('width')
+      width.style.width = window.innerWidth * .62;
 });
