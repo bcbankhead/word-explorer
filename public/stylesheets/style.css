@@ -166,7 +166,7 @@ a {
   width:242px;
   box-sizing: border-box;
   border:0px solid black;
-  overflow:hidden;
+  overflow:scroll;
 }
 
 .backlabel {

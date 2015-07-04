@@ -73,6 +73,9 @@ router.post('/words', function(req, res, next) {
           if(pearsonResult){
             if(pearsonResult.headword){
               var pearsonHW = pearsonResult.headword;
+              if(pearsonHW.indexOf("-") > 0){
+                pearsonHW = "n/a";
+              }
             } else {
               var pearsonHW = "n/a"
               defAvail += 1;
@@ -208,7 +211,7 @@ router.get('/words/:word', function(req, res, next){
         if(pearsonResult){
           if(pearsonResult.headword){
             var pearsonHW = pearsonResult.headword;
-              if(pearsonHW.indexOf("-" > 0)){
+              if(pearsonHW.indexOf("-") > 0){
                 pearsonHW = "n/a";
               }
           } else {
