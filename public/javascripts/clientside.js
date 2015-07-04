@@ -244,6 +244,8 @@ var recentWordsOn = 0;
 window.addEventListener('click', function(){
     recentWords.style.opacity = 0;
     recentWords.style.zIndex = 0;
+    recentWordsHeader.style.opacity = 0;
+    recentWordsHeader.style.zIndex = 0;
 })
 
 if(document.getElementById('word')){
@@ -281,7 +283,9 @@ if (document.getElementById('back')){
   var back = document.getElementById('back')
   back.addEventListener('mouseover', function(){
       recentWords.style.opacity = 1;
-      recentWords.style.zIndex = 9999;
+      recentWords.style.zIndex = 9998;
+      recentWordsHeader.style.opacity = 1;
+      recentWordsHeader.style.zIndex = 9999;
   })
 
   recentWords.addEventListener('mouseleave', function(){
@@ -289,6 +293,8 @@ if (document.getElementById('back')){
     recentWordsOn = 0;
     recentWords.style.opacity = 0;
     recentWords.style.zIndex = 0;
+    recentWordsHeader.style.opacity = 0;
+    recentWordsHeader.style.zIndex = 0;
   })
 }
 

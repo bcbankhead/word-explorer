@@ -44,6 +44,7 @@ router.post('/words', function(req, res, next) {
       recent += "," + theWord;
       recentList.push(theWord);
     }
+
     //I fuckin cheated to get this...
     function onlyUnique(value, index, self) {  //straight up cheated
       return self.indexOf(value) === index;
@@ -51,7 +52,7 @@ router.post('/words', function(req, res, next) {
     var unique = recentList.filter(onlyUnique);
     recentList = unique;
   };
-
+  
   var notavail = 0;
   var defAvail = 0;
   var thesaurusObj = {};
@@ -185,6 +186,7 @@ router.get('/words/:word', function(req, res, next){
       recent += "," + theWord;
       recentList.push(theWord);
     }
+
     //I fuckin cheated to get this...
     function onlyUnique(value, index, self) {  //straight up cheated
       return self.indexOf(value) === index;
@@ -238,7 +240,6 @@ router.get('/words/:word', function(req, res, next){
           thesaurusObj = JSON.stringify(thesaurusObj)
           notavail = 0;
         } else if (thesaurusResult === undefined) {
-          console.log("wtf",thesaurusResult);
           notavail = 1;
         }
 
