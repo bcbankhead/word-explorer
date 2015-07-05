@@ -141,6 +141,8 @@ module.exports = {
           writeEntry(base,type,input.adjective.syn);
         } else if (input.adjective.sim){
           writeEntry(base,type,input.adjective.sim);
+        } else if (input.adjective.rel){
+            writeEntry(base,type,input.adjective.rel);
         } else {
           var obj = {}
           words.push(obj);
@@ -153,6 +155,8 @@ module.exports = {
           writeEntry(base,type,input.noun.syn);
         } else if (input.noun.sim){
           writeEntry(base,type,input.noun.syn);
+        } else if (input.noun.rel){
+            writeEntry(base,type,input.noun.rel);
         } else {
           var obj = {}
           words.push(obj);
@@ -163,8 +167,10 @@ module.exports = {
         type = "verb";
         if (input.verb.syn){
           writeEntry(base,type,input.verb.syn);
-        } else if (input.noun.sim){
+        } else if (input.verb.sim){
           writeEntry(base,type,input.verb.syn);
+        } else if (input.verb.rel){
+            writeEntry(base,type,input.verb.rel);
         } else {
           var obj = {}
           words.push(obj);

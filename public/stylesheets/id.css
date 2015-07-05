@@ -78,10 +78,20 @@
   padding:0px;
   width:270px;
   max-height: 500px;
-  overflow: scroll;
+  overflow: auto;
   text-align: justify;
   transition:all 0.5s ease;
 }
+
+.stretch {
+    width: 100%;
+    display: block;
+    font-size: 0;
+    line-height: 0;
+    border:0px solid blue;
+    box-sizing: border-box;
+}
+
 
 #word-box a{
   color: rgb(0, 210, 255);
@@ -108,7 +118,7 @@
   padding:0px;
   width:270px;
   max-height: 500px;
-  overflow: scroll;
+  overflow: auto;
   text-align: justify;
   transition:all 0.5s ease;
 }
@@ -216,7 +226,7 @@
   width: 150px;
   min-height:200px;
   max-height: 400px;
-  overflow:scroll;
+  overflow:auto;
   background-color: rgb(255, 255, 255);
   box-sizing: border-box;
   transition:all .3s ease;
@@ -229,7 +239,7 @@
   margin-left:-15px;
   top:0px;
   border-bottom:1px solid black;
-  width: 150px;
+  width: 148px;
   height:15px;
   font-size: 12px;
   font-weight: normal;
@@ -241,13 +251,19 @@
 
 #disabled {
   position:absolute;
-  opacity: .5;
+  opacity: .75;
   margin-left: 200px;
   top:5px;
   border:1px solid black;
   width:70px;
   height:25px;
-  background-color: rgb(30, 30, 30);
+  color: rgb(255, 0, 0);
+  font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
+  width: 70px;
+  padding:0px;
+  text-align: center;
+  text-decoration: none;
+  background-color: rgb(0, 0, 0);
   box-sizing: border-box;
   z-index: 0;
   transition:all .3s ease;
@@ -281,6 +297,6 @@
 }
 
 #width {
-  height:1px;
+  height:10px;
   border:0px solid black;
 }

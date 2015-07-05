@@ -10,14 +10,15 @@
 
 .search {
   position:relative;
-  float:left;
+  float:right;
   display: inline-block;
-  width: 300px;
+  width: 325px;
   font-size:18px;
   vertical-align: top;
   box-sizing: border-box;
   padding-left: 25px;
-  margin:0px;
+  padding-right: 25px;
+  /*margin-right:25px;*/
   margin-bottom: -9999px;
   padding-bottom: 9999px;
   border-left:1px dotted black;
@@ -69,11 +70,51 @@
 
 .heading5 {
   border:0px solid black;
+  display:block;
   font-size: 14px;
   color: rgb(180, 180, 250);
   font-weight: normal;
   text-align: justify;
 }
+
+.heading6 {
+  border:0px solid black;
+  display:block;
+  font-size: 14px;
+  /*color: rgb(180, 180, 250);
+  background-color: rgb(255,255,255);*/
+  font-weight: normal;
+}
+
+/*.heading6:hover {
+  border:0px solid black;
+  display:block;
+  font-size: 14px;
+  color: rgb(255, 255, 255);
+  background-color: rgb(255,255,255);
+  background-color: rgb(180,180,250);
+  font-weight: normal;
+}*/
+
+.heading6 a{
+  font-size: 14px;
+  color: rgb(180, 180, 250);
+  display:block;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: justify;
+}
+
+.heading6 a:hover{
+  font-size: 14px;
+  color: rgb(110, 110, 200);
+  background-color: rgb(180,180,250);
+  display:block;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: justify;
+}
+
 
 .heading5 a{
   font-size: 14px;

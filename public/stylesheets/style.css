@@ -13,7 +13,7 @@ a {
   height: 25px;
   border:1px solid black;
   border-left: 0px;
-  background-color: rgb(170, 255, 170);
+  background-color: rgb(150, 255, 150);
   color: rgb(0, 0, 0);
   font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
   width: 70px;
@@ -89,7 +89,6 @@ a {
   transition:all 0.3s ease;
 }
 
-
 .buttontxt {
   padding:5px;
   display:inline-block;
@@ -118,10 +117,11 @@ a {
 
 
 .col1 {
-  float:left;
   padding: 3px;
-  display:inline-grid;
+  display:inline-block;
   border:0px solid black;
+  margin:0px;
+  box-sizing: border-box;
 }
 
 
@@ -166,7 +166,7 @@ a {
   width:242px;
   box-sizing: border-box;
   border:0px solid black;
-  overflow:scroll;
+  overflow:hidden;
 }
 
 .backlabel {

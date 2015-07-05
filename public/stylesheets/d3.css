@@ -10,8 +10,8 @@
   padding:0;
   z-index: 1001;
   position:relative;
-  float:left;
-  border:0px solid green;
+  /*float:left;*/
+  border:0px solid red;
 }
 
 #graph {

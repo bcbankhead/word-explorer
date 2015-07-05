@@ -1,3 +1,7 @@
+var width = document.getElementById('width')
+    width.setAttribute('width', (window.innerWidth * .8));
+    console.log(width);
+
 if(document.getElementById('sform')){
   var dictionary = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.whitespace,
@@ -253,7 +257,7 @@ if(document.getElementById('word')){
   word.addEventListener('focus', function(){
     if(word.value.length === 0){
       document.getElementById('submit').disabled = true;
-      disabled.style.opacity = .5;
+      disabled.style.opacity = .75;
       disabled.style.zIndex = 9999;
     }
   })
@@ -261,7 +265,7 @@ if(document.getElementById('word')){
   word.addEventListener('blur', function(){
     if(word.value.length === 0){
       document.getElementById('submit').disabled = true;
-      disabled.style.opacity = .5;
+      disabled.style.opacity = .75;
       disabled.style.zIndex = 9999;
     }
   })
@@ -273,7 +277,7 @@ if(document.getElementById('word')){
       disabled.style.zIndex = 0;
     } else {
       document.getElementById('submit').disabled = true;
-      disabled.style.opacity = .5;
+      disabled.style.opacity = .75;
       disabled.style.zIndex = 9999;
     }
   })
@@ -338,6 +342,4 @@ $( document ).ready(function() {
     status.style.backgroundColor = 'rgb(240,240,240)';
     })
   },500)
-  var width = document.getElementById('width')
-      width.style.width = window.innerWidth * .62;
 });

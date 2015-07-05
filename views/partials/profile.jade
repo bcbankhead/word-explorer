@@ -14,11 +14,13 @@
             .col1
               if item !== ''
                 a(href="/words/" + item) #{item}
+          span.stretch
         #word-box-del
           for item, i in data.words
             .col1
               if item !== ''
                 a(href="/delete/" + item) #{item}
+          span.stretch
       if rMsg
         .removed
           |#{rMsg}  

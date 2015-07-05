@@ -52,7 +52,7 @@ router.post('/words', function(req, res, next) {
     var unique = recentList.filter(onlyUnique);
     recentList = unique;
   };
-  
+
   var notavail = 0;
   var defAvail = 0;
   var thesaurusObj = {};
@@ -100,7 +100,9 @@ router.post('/words', function(req, res, next) {
 
           if (thesaurusResult != undefined){
             thesaurusResult = JSON.parse(thesaurusResult);
+            console.log(thesaurusResult);
             thesaurusObj = functions.trParse(theWord,thesaurusResult);
+            console.log(thesaurusObj);
             thesaurusObj = JSON.stringify(thesaurusObj)
             notavail = 0;
           } else if (thesaurusResult === undefined) {
