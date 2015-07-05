@@ -5,6 +5,7 @@ block content
     .titlebox
      | Word Explorer
     .login
+      |Log in
       form(action="/login" method="POST")
         if currentUser == 'new' || currentUser == '' || currentUser == null
           input(name="user" id="user" class="input" type="text" placeholder="User Name" autofocus)
@@ -15,6 +16,7 @@ block content
         br 
         input(type="submit" id="submit" value="Login" class="button_signup")
       p
+      .heading5
         a(href="/signup") Sign Up
       .error 
         if message

@@ -28,6 +28,20 @@ router.get('/', function(req, res, next) {
   }
 });
 
+router.get('/words', function(req, res, next) {
+  var cookieUser = req.cookies.user;
+  var response = req.body.response;
+
+  if(!cookieUser || cookieUser === 'new'){
+    res.redirect('/');
+  } else {
+    userCollection.findOne({username: cookieUser}, function(err, dataset){
+      res.render('words/index', { currentUser: cookieUser, data: dataset });
+    });
+  }
+});
+
+
 router.post('/words', function(req, res, next) {
   var currentUser = req.cookies.user;
   var theWord = req.body.word.replace(/\-/g," ");
@@ -71,25 +85,12 @@ router.post('/words', function(req, res, next) {
         functions.getData(pearsonAPI, function(definitionPearson){
 
           var pearsonResult = functions.pearsonData(definitionPearson);
-          if(pearsonResult){
-            if(pearsonResult.headword){
-              var pearsonHW = pearsonResult.headword;
-              if(pearsonHW.indexOf("-") > 0){
-                pearsonHW = "n/a";
-              }
-            } else {
-              var pearsonHW = "n/a"
-              defAvail += 1;
-            }
-            if(pearsonResult.ipa){
-              var pearsonIPA = pearsonResult.ipa;
-            } else {
-              var pearsonIPA = "n/a"
-            }
-            if(pearsonResult.definition){
-              var pearsonDef = pearsonResult.definition;
-              pearsonDef = functions.toProperCase(pearsonDef);
-            }
+          var pearsonBits = functions.pearsonParts(pearsonResult);
+          var pearsonHW = pearsonBits.HW,
+              pearsonIPA = pearsonBits.IPA,
+              defAvail = pearsonBits.DEFAvail;
+          if(pearsonBits.DEF){
+            var pearsonDef = functions.toProperCase(pearsonBits.DEF);
           }
 
           if(definition && definition !== undefined){
@@ -176,6 +177,7 @@ router.post('/words', function(req, res, next) {
 router.get('/words/:word', function(req, res, next){
   var theWord = req.params.word.replace(/\-/g," ");
       theWord = theWord.toLowerCase();
+  var currentUser = req.cookies.user;
   var recent = req.cookies.recent;
       if(!recent){
         recent = theWord;
@@ -212,24 +214,12 @@ router.get('/words/:word', function(req, res, next){
       functions.getData(pearsonAPI, function(definitionPearson){
 
         var pearsonResult = functions.pearsonData(definitionPearson);
-        if(pearsonResult){
-          if(pearsonResult.headword){
-            var pearsonHW = pearsonResult.headword;
-              if(pearsonHW.indexOf("-") > 0){
-                pearsonHW = "n/a";
-              }
-          } else {
-            var pearsonHW = "n/a";
-          }
-          if(pearsonResult.ipa){
-            var pearsonIPA = pearsonResult.ipa;
-          } else {
-            var pearsonIPA = "n/a";
-          }
-          if(pearsonResult.definition){
-            var pearsonDef = pearsonResult.definition;
-            pearsonDef = functions.toProperCase(pearsonDef);
-          }
+        var pearsonBits = functions.pearsonParts(pearsonResult);
+        var pearsonHW = pearsonBits.HW,
+            pearsonIPA = pearsonBits.IPA,
+            defAvail = pearsonBits.DEFAvail;
+        if(pearsonBits.DEF){
+          var pearsonDef = functions.toProperCase(pearsonBits.DEF);
         }
 
         if(definition.length > 0){
@@ -244,18 +234,17 @@ router.get('/words/:word', function(req, res, next){
         } else if (thesaurusResult === undefined) {
           notavail = 1;
         }
-
+        console.log(thesaurusResult);
         var definitions = functions.defCollect(wordNikDef,pearsonDef);
 
-        var cookieUser = req.cookies.user;
-        if(!cookieUser){
+        if(!currentUser){
           res.cookie('recent', recent)
           res.render('words/index', { word: theWord, recent: recentList, definition: definitions, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, currentUser: 'new' });
         }
 
         theWord = functions.toProperCase(theWord);
-        if(cookieUser && notavail == 0){
-          userCollection.findOne({username: cookieUser}, function(err, dataset){
+        if(currentUser && notavail == 0){
+          userCollection.findOne({username: currentUser}, function(err, dataset){
             // wordCollection.update(
             // { word: theWord },
             // {
@@ -264,12 +253,12 @@ router.get('/words/:word', function(req, res, next){
             // },
             // { upsert: true });
           res.cookie('recent', recent)
-          res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, data: dataset, currentUser: cookieUser, definition: definitions});
+          res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, data: dataset, currentUser: currentUser, definition: definitions});
           });
-        } else if(cookieUser && notavail == 1){
-          userCollection.findOne({username: cookieUser}, function(err, dataset){
+        } else if(currentUser && notavail == 1){
+          userCollection.findOne({username: currentUser}, function(err, dataset){
           res.cookie('recent', recent)
-          res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: "empty", data: dataset, currentUser: cookieUser, errorMsg: 'Word not located in thesaurus.(009)', definition: definitions});
+          res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: "empty", data: dataset, currentUser: currentUser, errorMsg: 'Word not located in thesaurus.(009)', definition: definitions});
           });
         }
       });
@@ -287,7 +276,6 @@ router.get('/addword/:word', function(req, res, next) {
   } else {
     var theWord = tmpWord;
   }
-
   var currentUser = req.cookies.user;
 
   //Write Entry to Database
@@ -420,6 +408,7 @@ router.get('/signup', function(req, res, next){
 
 router.get('/logout', function(req, res, next) {
   res.clearCookie(req.cookies.user, {path: '/'});
+  res.clearCookie(req.cookies.recent, {path: '/'});
   res.cookie('user', '', { expires: new Date(1), path: '/' });
   res.render('login/index', {currentUser: 'new', message: 'Logged out successfully'});
 });

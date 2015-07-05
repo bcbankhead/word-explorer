@@ -1,10 +1,14 @@
 .user
   if currentUser == 'new'
-    a(href="/signup") Sign Up
+    .heading5
+      a(href="/signup") Sign Up
+    br
+    .heading5
+      a(href="/login") Log in
   else
     .signedin
       |Welcome, #{currentUser} 
-    .logout
+    .heading5
       a(href="/logout") Logout
     .searchcount
       | Words Discovered: 

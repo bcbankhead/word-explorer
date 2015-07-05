@@ -34,8 +34,8 @@ if(payload != "empty"){
   console.log("h",h);
   console.log("w",w);
 
-  var rx = w / 2,
-      ry = h / 2,
+  var rx = w / 2.05,
+      ry = h / 2.05,
       m0,
       rotate = 0;
 
@@ -58,10 +58,11 @@ if(payload != "empty"){
     .insert("div", "h2")
       .style("top", "0px")
       .style("left", "0px")
+      .style("margin", "0 auto")
       .style('border', '0px solid black')
       .style("width", w + "px")
       .style("height", w + "px")
-      .style("position", "relative")
+      //.style("position", "relative")
       .style("-webkit-backface-visibility", "hidden");
 
   var svg = div.append("svg:svg")
@@ -329,17 +330,18 @@ if (document.getElementById('addmode')){
 }
 
 $( document ).ready(function() {
-  var hiddendiv = document.getElementById('hidden')
-      hiddendiv.innerHTML = 'true';
   setTimeout(function(){
   var status = document.getElementById('word')
       status.placeholder = "search..."
       status.style.backgroundColor = 'rgb(240,240,240)';
     status.addEventListener('focus', function(){
-    status.style.backgroundColor = 'rgb(0,255,255)';
-    })
+      status.style.backgroundColor = 'rgb(0,255,255)';
+    });
     status.addEventListener('blur', function(){
-    status.style.backgroundColor = 'rgb(240,240,240)';
-    })
+      status.style.backgroundColor = 'rgb(240,240,240)';
+    });
+    var hiddendiv = document.getElementById('hidden')
+        hiddendiv.innerHTML = 'true';
+        console.log(hiddendiv);
   },500)
 });

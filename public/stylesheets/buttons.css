@@ -1,0 +1,107 @@
+.button_submit {
+  vertical-align: top;
+  display:inline-block;
+  height: 25px;
+  border:1px solid black;
+  border-left: 0px;
+  background-color: rgb(150, 255, 150);
+  color: rgb(0, 0, 0);
+  font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
+  width: 70px;
+  padding:0px;
+  text-align: center;
+  text-decoration: none;
+  box-sizing: border-box;
+  margin-top: 5px;
+  transition:all 0.3s ease;
+}
+
+.button_submit:focus {
+  outline: 0;
+  background-color: rgb(50, 235, 50);
+  transition:all 0.3s ease;
+}
+
+.button_submit:hover {
+  vertical-align: top;
+  display:inline-block;
+  height: 25px;
+  border:1px solid black;
+  border-left: 0px;
+  background-color: rgb(50, 235, 50);
+  color: rgb(0, 0, 0);
+  font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
+  width: 70px;
+  padding:0px;
+  text-align: center;
+  text-decoration: none;
+  cursor:pointer;
+  box-sizing: border-box;
+  margin-top: 5px;
+  transition:all 0.3s ease;
+}
+
+.button_signup {
+  display:inline-block;
+  height: 25px;
+  border:1px solid;
+  background-color: rgb(190, 255, 255);
+  color: rgb(0, 0, 0);
+  font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
+  width: 100px;
+  padding:0px;
+  text-align: center;
+  text-decoration: none;
+  box-sizing: border-box;
+  margin-top: 5px;
+  transition:all 0.3s ease;
+}
+
+.button_signup:hover {
+  display:inline-block;
+  height: 25px;
+  border:1px solid;
+  background-color: rgb(70, 255, 255);
+  color: rgb(0, 0, 0);
+  font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
+  width: 100px;
+  padding:0px;
+  text-align: center;
+  text-decoration: none;
+  cursor:pointer;
+  box-sizing: border-box;
+  margin-top: 5px;
+  transition:all 0.3s ease;
+}
+
+.button_signup:focus {
+  outline: 0;
+  background-color: rgb(70, 255, 255);
+  transition:all 0.3s ease;
+}
+
+.buttontxt {
+  padding:5px;
+  display:inline-block;
+  border:0px solid black;
+  vertical-align:middle;
+}
+
+.input {
+  vertical-align: top;
+  border: 1px solid;
+  padding: 5px;
+  width: 200px;
+  height: 25px;
+  font-size: 14px;
+  background-color: rgb(240, 240, 240);
+  box-sizing: border-box;
+  margin-top: 5px;
+  text-transform: lowercase;
+}
+
+.input:focus {
+  outline: 0;
+  background-color: rgb(110, 225, 255);
+  transition:all 0.3s ease;
+}

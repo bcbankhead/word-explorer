@@ -78,6 +78,30 @@ module.exports = {
     }
   },
 
+  pearsonParts: function(data){
+    var defAvail = 0;
+    if(data){
+      if(data.headword){
+        var pearsonHW = data.headword;
+        if(pearsonHW.indexOf("-") > 0){
+          pearsonHW = "n/a";
+        }
+      } else {
+        var pearsonHW = "n/a"
+        defAvail += 1;
+      }
+      if(data.ipa){
+        var pearsonIPA = data.ipa;
+      } else {
+        var pearsonIPA = "n/a"
+      }
+      if(data.definition){
+        var pearsonDef = data.definition;
+      }
+    }
+    return { HW: pearsonHW, IPA: pearsonIPA, DEF: pearsonDef, DEFAvail: defAvail}
+  },
+
   getData: function(url,callback){
     var unirest = require('unirest');
     unirest.get(url).end(function (response) {
