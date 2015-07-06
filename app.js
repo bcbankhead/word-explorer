@@ -56,5 +56,15 @@ app.use(function(err, req, res, next) {
   });
 });
 
+//global unlogged-in redirect
+app.use(function (req, res, next) {
+  var cookieUser = req.cookies.user;
+  var response = req.body.response;
+  if(!cookieUser || cookieUser === 'new'){
+    res.redirect('/login');
+  }
+  //next();
+});
+
 
 module.exports = app;

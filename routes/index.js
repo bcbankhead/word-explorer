@@ -20,7 +20,7 @@ router.get('/', function(req, res, next) {
   var response = req.body.response;
 
   if(!cookieUser || cookieUser === 'new'){
-    res.render('index', { currentUser: 'new'});
+    res.render('login/index', { currentUser: 'new'});
   } else {
     userCollection.findOne({username: cookieUser}, function(err, dataset){
       res.render('words/index', { currentUser: cookieUser, data: dataset });
@@ -232,7 +232,7 @@ router.get('/words/:word', function(req, res, next){
         } else if (thesaurusResult === undefined) {
           notavail = 1;
         }
-        
+
         var definitions = functions.defCollect(wordNikDef,pearsonDef);
 
         if(!currentUser){
@@ -365,6 +365,7 @@ router.post('/signup', function(req, res, next){
           visitcount: 0,
         });
         res.cookie('user', currentUser)
+        res.cookie('recent', '')
         userCollection.findOne({username: currentUser}, function(err, dataset){
           var id = dataset._id;
           res.redirect('/profiles/'+ id);
