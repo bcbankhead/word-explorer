@@ -342,6 +342,35 @@ $( document ).ready(function() {
     });
     var hiddendiv = document.getElementById('hidden')
         hiddendiv.innerHTML = 'true';
-        console.log(hiddendiv);
   },500)
 });
+
+if(document.getElementById('histSearch')){
+  var histSearch = document.getElementById('histSearch')
+  var wordCols =  document.getElementsByClassName('col1')
+
+  histSearch.addEventListener('keyup', function(){
+    if(histSearch.value.length == 0){
+      for(var i =0; i < wordCols.length; i++){
+        wordCols[i].style.display = 'inline-block';
+      }
+    }
+  });
+
+  histSearch.addEventListener('keyup', function(){
+    var searchChar = histSearch.value[0];
+    if(histSearch.value.length > 0){
+      searchChar = searchChar.toUpperCase();
+      console.log("check", searchChar);
+
+      for(var i =0; i < wordCols.length; i++){
+        if(wordCols[i].children[0].innerHTML[0] === searchChar){
+          wordCols[i].style.display = 'inline-block';
+          console.log(wordCols[i].children[0].innerHTML);
+        } else {
+          wordCols[i].style.display = 'none';
+        }
+      }
+    }
+  });
+};
