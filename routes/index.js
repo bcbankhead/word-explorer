@@ -7,15 +7,15 @@ var db = require('monk')(process.env.MONGOLAB_URI);
 var userCollection = db.get('words_users');
 var wordCollection = db.get('words_words');
 
-var api1 = (process.env.wordnik);
-var api2 = (process.env.dictionary);
-var api3 = (process.env.thesaurus);
-var api4 = (process.env.pearson_consumer);
+var api1 = (process.env.WORDNIK);
+var api2 = (process.env.DICTIONARY);
+var api3 = (process.env.THESAURUS);
+var api4 = (process.env.PEARSON_CONSUMER);
 
 var functions = require('../public/javascripts/serverside.js');
 
 var checkUser = function(req, res, next) {
-  if(req.cookies.user){
+  if(req.session.user){
     next();
   } else {
     res.redirect('/login');
@@ -23,20 +23,20 @@ var checkUser = function(req, res, next) {
 }
 /* GET home page. */
 router.get('/', checkUser, function(req, res, next) {
-  userCollection.findOne({username: req.cookies.user}, function(err, dataset){
-    res.render('words/index', { currentUser: req.cookies.user, data: dataset });
+  userCollection.findOne({username: req.session.user}, function(err, dataset){
+    res.render('words/index', { currentUser: req.session.user, data: dataset });
   });
 });
 
 router.get('/words',checkUser, function(req, res, next) {
-  userCollection.findOne({username: req.cookies.user}, function(err, dataset){
-    res.render('words/index', { currentUser: req.cookies.user, data: dataset });
+  userCollection.findOne({username: req.session.user}, function(err, dataset){
+    res.render('words/index', { currentUser: req.session.user, data: dataset });
   });
 });
 
 
 router.post('/words', function(req, res, next) {
-  var currentUser = req.cookies.user;
+  var currentUser = req.session.user;
   var theWord = req.body.word.replace(/\-/g," ");
       theWord = theWord.toLowerCase();
   var recent = req.cookies.recent;
@@ -94,6 +94,7 @@ router.post('/words', function(req, res, next) {
 
         if (thesaurusResult != undefined){
           thesaurusResult = JSON.parse(thesaurusResult);
+
           thesaurusObj = functions.trParse(theWord,thesaurusResult);
           thesaurusObj = JSON.stringify(thesaurusObj)
           notavail = 0;
@@ -107,37 +108,10 @@ router.post('/words', function(req, res, next) {
         theWord = functions.toProperCase(theWord);
         if (theWord.length > 0 && notavail === 0){
           if (currentUser !== 'new' || currentUser != '' || currentUser != null){
-
-            // wordCollection.update(
-            // { word: theWord },
-            // {
-            //   word: theWord,
-            //   ipa: pearsonIPA
-            // },
-            // { upsert: true });
-
-            userCollection.update(
-            { username: currentUser },
-            { $pull: { words: theWord } },
-            { upsert: true });
-
-            userCollection.update(
-            { username: currentUser },
-            { $pull: { words: '' } },
-            { upsert: true });
-
-            userCollection.update(
-            { username: currentUser },
-            { $push: { words: theWord } },
-            { upsert: true });
-
-            userCollection.update(
-            { username: currentUser },
-            { $push: { words: { $each: [ ], $sort: 1 } } },
-            { upsert: true });
-
+            functions.updateData(currentUser,theWord,function(callback){
+              console.log("record update (type 0): ",callback);
+            })
             };
-
           if(!currentUser || currentUser === 'new'){
               res.cookie('recent', recent)
               res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: 'new'});
@@ -168,7 +142,7 @@ router.post('/words', function(req, res, next) {
 router.get('/words/:word', function(req, res, next){
   var theWord = req.params.word.replace(/\-/g," ");
       theWord = theWord.toLowerCase();
-  var currentUser = req.cookies.user;
+  var currentUser = req.session.user;
   var recent = req.cookies.recent;
       if(!recent){
         recent = theWord;
@@ -218,7 +192,9 @@ router.get('/words/:word', function(req, res, next){
         }
 
         if (thesaurusResult != undefined){
+          console.log(thesaurusResult);
           thesaurusResult = JSON.parse(thesaurusResult);
+          console.log(thesaurusResult);
           thesaurusObj = functions.trParse(theWord,thesaurusResult);
           thesaurusObj = JSON.stringify(thesaurusObj)
           notavail = 0;
@@ -267,34 +243,16 @@ router.get('/addword/:word', function(req, res, next) {
   } else {
     var theWord = tmpWord;
   }
-  var currentUser = req.cookies.user;
+  var currentUser = req.session.user;
 
   //Write Entry to Database
   theWord = functions.toProperCase(theWord);
   if(avail === 0){
     if (currentUser !== 'new' || currentUser != '' || currentUser != null){
-
-        userCollection.update(
-        { username: currentUser },
-        { $pull: { words: theWord } },
-        { upsert: true });
-
-        userCollection.update(
-        { username: currentUser },
-        { $pull: { words: '' } },
-        { upsert: true });
-
-        userCollection.update(
-        { username: currentUser },
-        { $push: { words: theWord } },
-        { upsert: true });
-
-        userCollection.update(
-        { username: currentUser },
-        { $push: { words: { $each: [ ], $sort: 1 } } },
-        { upsert: true });
-
+      functions.updateData(currentUser,theWord,function(callback){
+        console.log("record update (type 1)",callback);
         res.redirect('/words/'+ theWord)
+      })
       };
   } else {
       userCollection.findOne({username: currentUser}, function(err, dataset){
@@ -317,7 +275,7 @@ router.get('/delete/:word', function(req, res, next) {
     var theWord = tmpWord;
   }
 
-  var currentUser = req.cookies.user;
+  var currentUser = req.session.user;
   theWord = functions.toProperCase(theWord);
 
   if(avail === 0){
@@ -357,7 +315,7 @@ router.post('/signup', function(req, res, next){
           password: passwordBcrypt,
           visitcount: 0,
         });
-        res.cookie('user', currentUser)
+        req.session.user = currentUser;
         res.cookie('recent', '')
         userCollection.findOne({username: currentUser}, function(err, dataset){
           var id = dataset._id;
@@ -368,30 +326,22 @@ router.post('/signup', function(req, res, next){
 })
 
 //Get Profile
-router.get('/profiles/:id', function(req, res, next) {
-  var cookieUser = req.cookies.user;
-  if(!cookieUser){
-    res.redirect('/');
-  } else {
-    userCollection.findOne({username: cookieUser}, function(err, dataset){
-      var id = dataset._id;
-      if (req.params.id != id) {
-        res.redirect('/');
-      } else {
-        res.render('profiles/index', {currentUser: cookieUser, data: dataset});
-      }
-    });
-  }
+router.get('/profiles/:id', checkUser, function(req, res, next) {
+  var currentUser = functions.toProperCase(req.session.user);
+
+  userCollection.findOne({username: currentUser}, function(err, dataset){
+    var id = dataset._id;
+    if (req.params.id != id) {
+      res.redirect('/');
+    } else {
+      res.render('profiles/index', {currentUser: currentUser, data: dataset});
+    }
+  });
 });
 
 //Get Login
 router.get('/login', function(req, res, next){
-  var cookieUser = req.cookies.user;
-  if(!cookieUser){
-        res.render('login/index', {currentUser: cookieUser, currentUser: 'new'});
-  } else {
-  res.render('login/index', {currentUser: cookieUser});
-  }
+  res.render('login/index');
 });
 
 router.get('/signup', function(req, res, next){
@@ -399,16 +349,17 @@ router.get('/signup', function(req, res, next){
 });
 
 router.get('/logout', function(req, res, next) {
-  res.clearCookie(req.cookies.user, {path: '/'});
+  req.session = null;
   res.clearCookie(req.cookies.recent, {path: '/'});
-  res.cookie('user', '', { expires: new Date(1), path: '/' });
   res.cookie('recent', '', { expires: new Date(1), path: '/' });
-  res.render('login/index', {currentUser: 'new', message: 'Logged out successfully'});
+  res.render('login/index', {message: 'Logged out successfully'});
 });
 
 //Login Execution
 router.post('/login', function(req, res, next){
   var currentUser = functions.toProperCase(req.body.user);
+  req.session.user = currentUser;
+
   userCollection.findOne({username: currentUser}, function(err, record){
     if (record === null){
       res.render('login/index', {currentUser: currentUser, message: "No login found for user: " + currentUser})
@@ -420,7 +371,7 @@ router.post('/login', function(req, res, next){
         userCollection.update(
           {user: currentUser },
           { visitcount: visits });
-        res.cookie('user', currentUser)
+        //res.cookie('user', currentUser)
 
         userCollection.findOne({username: currentUser}, function(err, dataset){
           var id = dataset._id;

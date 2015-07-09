@@ -1,25 +1,30 @@
 module.exports = {
 
-  updateData: function(currentUser, theWord){
+  updateData: function(currentUser, theWord, callback){
     var db = require('monk')(process.env.MONGOLAB_URI);
     var userCollection = db.get('words_users');
 
     userCollection.update(
     { username: currentUser },
-    { $pull: { words: theWord } });
+    { $pull: { words: theWord } },
+    { upsert: true });
 
     userCollection.update(
     { username: currentUser },
-    { $pull: { words: '' } });
+    { $pull: { words: '' } },
+    { upsert: true });
 
     userCollection.update(
     { username: currentUser },
-    { $push: { words: theWord } });
+    { $push: { words: theWord } },
+    { upsert: true });
 
     userCollection.update(
     { username: currentUser },
-    { $push: { words: { $each: [ ], $sort: 1 } } })
+    { $push: { words: { $each: [ ], $sort: 1 } } },
+    { upsert: true })
 
+    callback('done')
   },
 
   defCollect: function(def1,def2){
@@ -155,51 +160,75 @@ module.exports = {
       var adjectives = [];
       var nouns = [];
       var verbs = [];
+      var ants = [];
       var words = [];
       var compared = [];
 
     if(input){
       if (input.adjective){
-        type = "adjective";
         if (input.adjective.syn){
+          type = "adjective.1adjective";
           writeEntry(base,type,input.adjective.syn);
-        } else if (input.adjective.sim){
-          writeEntry(base,type,input.adjective.sim);
-        } else if (input.adjective.rel){
-            writeEntry(base,type,input.adjective.rel);
-        } else {
-          var obj = {}
-          words.push(obj);
         }
+
+        if (input.adjective.sim){
+          type = "adjective.1similar";
+          writeEntry(base,type,input.adjective.sim);
+        }
+
+        if (input.adjective.rel){
+          type = "adjective.1related";
+          writeEntry(base,type,input.adjective.rel);
+        }
+        // else {
+        //   var obj = {}
+        //   words.push(obj);
+        // }
+        if (input.adjective.ant){
+            type = "adjective.1antonym";
+            writeEntry(base,type,input.adjective.ant);
+          }
       }
 
       if (input.noun){
-        type = "noun";
         if (input.noun.syn){
+          type = "noun.2noun";
           writeEntry(base,type,input.noun.syn);
-        } else if (input.noun.sim){
-          writeEntry(base,type,input.noun.syn);
-        } else if (input.noun.rel){
-            writeEntry(base,type,input.noun.rel);
-        } else {
-          var obj = {}
-          words.push(obj);
         }
+        if (input.noun.sim){
+          type = "noun.2similar";
+          writeEntry(base,type,input.noun.sim);
+        }
+        if (input.noun.rel){
+          type = "noun.2related";
+            writeEntry(base,type,input.noun.rel);
+        }
+        if (input.noun.ant){
+            type = "noun.2antonym";
+            writeEntry(base,type,input.noun.ant);
+          }
       }
 
       if (input.verb){
-        type = "verb";
         if (input.verb.syn){
+          type = "verb.3verb";
           writeEntry(base,type,input.verb.syn);
-        } else if (input.verb.sim){
-          writeEntry(base,type,input.verb.syn);
-        } else if (input.verb.rel){
-            writeEntry(base,type,input.verb.rel);
-        } else {
-          var obj = {}
-          words.push(obj);
         }
+        if (input.verb.sim){
+          type = "verb.3similar";
+          writeEntry(base,type,input.verb.syn);
+        }
+        if (input.verb.rel){
+          type = "verb.3related";
+            writeEntry(base,type,input.verb.rel);
+        }
+        if (input.verb.ant){
+            type = "verb.3antonym";
+            writeEntry(base,type,input.verb.ant);
+          }
       }
+
+console.log("ahsdhajhdksa",words);
       return words;
       }
   },

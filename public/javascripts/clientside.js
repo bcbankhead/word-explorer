@@ -23,13 +23,10 @@ var payload = document.getElementById('hidden').innerHTML;
 
 if(payload != "empty"){
 
-
-
   payload = JSON.parse(payload);
 
   var h = window.innerHeight;
   var w = document.getElementById('graph').clientWidth
-
 
   console.log("h",h);
   console.log("w",w);
@@ -186,36 +183,178 @@ if(payload != "empty"){
   }
 }
 
-if (document.getElementById('node-noun')){
-var nodes = document.getElementById('node-noun')
-nodes.children[0].setAttribute('fill', '#FF0000')
+if (document.getElementById('node-2noun')){
+var nodes = document.getElementById('node-2noun')
+var text = nodes.children[0].innerHTML
+text = text.substr(1,text.length-1)
+nodes.children[0].innerHTML = text;
+nodes.children[0].setAttribute('fill', '#FF66ff')
 nodes.children[0].setAttribute('font-weight', 'bold')
 nodes.children[0].setAttribute('font-size', '24px')
 nodes.removeAttribute('cursor');
-d3.select("#node-noun")
+d3.select("#node-2noun")
  .on('click', null);
 }
 
-if (document.getElementById('node-verb')){
-var nodes = document.getElementById('node-verb')
+if (document.getElementById('node-2similar')){
+var nodes = document.getElementById('node-2similar')
+var text = nodes.children[0].innerHTML
+text = text.substr(1,text.length-1)
+nodes.children[0].innerHTML = text;
+nodes.children[0].setAttribute('fill', '#880088')
+nodes.children[0].setAttribute('font-weight', 'bold')
+nodes.children[0].setAttribute('font-size', '18px')
+nodes.removeAttribute('cursor');
+d3.select("#node-2similar")
+ .on('click', null);
+}
+
+if (document.getElementById('node-2antonym')){
+var nodes = document.getElementById('node-2antonym')
+var text = nodes.children[0].innerHTML
+text = text.substr(1,text.length-1)
+nodes.children[0].innerHTML = text;
+nodes.children[0].setAttribute('fill', '#880088')
+nodes.children[0].setAttribute('font-weight', 'bold')
+nodes.children[0].setAttribute('font-size', '18px')
+nodes.removeAttribute('cursor');
+d3.select("#node-2antonym")
+ .on('click', null);
+}
+
+if (document.getElementById('node-2related')){
+var nodes = document.getElementById('node-2related')
+var text = nodes.children[0].innerHTML
+text = text.substr(1,text.length-1)
+nodes.children[0].innerHTML = text;
+nodes.children[0].setAttribute('fill', '#880088')
+nodes.children[0].setAttribute('font-weight', 'bold')
+nodes.children[0].setAttribute('font-size', '18px')
+nodes.removeAttribute('cursor');
+d3.select("#node-2related")
+ .on('click', null);
+}
+
+
+if (document.getElementById('node-3verb')){
+var nodes = document.getElementById('node-3verb')
+var text = nodes.children[0].innerHTML
+text = text.substr(1,text.length-1)
+nodes.children[0].innerHTML = text;
 nodes.children[0].setAttribute('fill', '#00FF00')
 nodes.children[0].setAttribute('font-weight', 'bold')
 nodes.children[0].setAttribute('font-size', '24px')
 nodes.removeAttribute('cursor');
-d3.select("#node-verb")
+d3.select("#node-3verb")
  .on('click', null);
 }
 
-if (document.getElementById('node-adjective')){
-var nodes = document.getElementById('node-adjective')
+if (document.getElementById('node-3similar')){
+var nodes = document.getElementById('node-3similar')
+var text = nodes.children[0].innerHTML
+text = text.substr(1,text.length-1)
+nodes.children[0].innerHTML = text;
+nodes.children[0].setAttribute('fill', '#008800')
+nodes.children[0].setAttribute('font-weight', 'bold')
+nodes.children[0].setAttribute('font-size', '18px')
+nodes.removeAttribute('cursor');
+d3.select("#node-3similar")
+ .on('click', null);
+}
+
+if (document.getElementById('node-3antonym')){
+var nodes = document.getElementById('node-3antonym')
+var text = nodes.children[0].innerHTML
+text = text.substr(1,text.length-1)
+nodes.children[0].innerHTML = text;
+nodes.children[0].setAttribute('fill', '#008800')
+nodes.children[0].setAttribute('font-weight', 'bold')
+nodes.children[0].setAttribute('font-size', '18px')
+nodes.removeAttribute('cursor');
+d3.select("#node-3antonym")
+ .on('click', null);
+}
+
+if (document.getElementById('node-3related')){
+var nodes = document.getElementById('node-3related')
+var text = nodes.children[0].innerHTML
+text = text.substr(1,text.length-1)
+nodes.children[0].innerHTML = text;
+nodes.children[0].setAttribute('fill', '#008800')
+nodes.children[0].setAttribute('font-weight', 'bold')
+nodes.children[0].setAttribute('font-size', '18px')
+nodes.removeAttribute('cursor');
+d3.select("#node-3related")
+ .on('click', null);
+}
+
+
+//
+// if (document.getElementById('node-antonym')){
+// var nodes = document.getElementById('node-antonym')
+// nodes.children[0].setAttribute('fill', '#FF0000')
+// nodes.children[0].setAttribute('font-weight', 'bold')
+// nodes.children[0].setAttribute('font-size', '24px')
+// nodes.removeAttribute('cursor');
+// d3.select("#node-antonym")
+//  .on('click', null);
+// }
+
+if (document.getElementById('node-1adjective')){
+var nodes = document.getElementById('node-1adjective')
+var text = nodes.children[0].innerHTML
+text = text.substr(1,text.length-1)
+nodes.children[0].innerHTML = text;
 nodes.children[0].setAttribute('fill', '#0000FF')
 nodes.children[0].setAttribute('font-weight', 'bold')
 nodes.children[0].setAttribute('font-size', '24px')
 nodes.removeAttribute('cursor');
-d3.select("#node-adjective")
+d3.select("#node-1adjective")
  .on('click', null);
-
 }
+
+if (document.getElementById('node-1similar')){
+var nodes = document.getElementById('node-1similar')
+var text = nodes.children[0].innerHTML
+text = text.substr(1,text.length-1)
+nodes.children[0].innerHTML = text;
+nodes.children[0].setAttribute('fill', '#000088')
+nodes.children[0].setAttribute('font-weight', 'bold')
+nodes.children[0].setAttribute('font-size', '18px')
+nodes.removeAttribute('cursor');
+d3.select("#node-1similar")
+ .on('click', null);
+}
+
+if (document.getElementById('node-1antonym')){
+var nodes = document.getElementById('node-1antonym')
+var text = nodes.children[0].innerHTML
+text = text.substr(1,text.length-1)
+nodes.children[0].innerHTML = text;
+nodes.children[0].setAttribute('fill', '#000088')
+nodes.children[0].setAttribute('font-weight', 'bold')
+nodes.children[0].setAttribute('font-size', '18px')
+nodes.removeAttribute('cursor');
+d3.select("#node-1antonym")
+ .on('click', null);
+}
+
+if (document.getElementById('node-1related')){
+var nodes = document.getElementById('node-1related')
+var text = nodes.children[0].innerHTML
+text = text.substr(1,text.length-1)
+nodes.children[0].innerHTML = text;
+nodes.children[0].setAttribute('fill', '#000088')
+nodes.children[0].setAttribute('font-weight', 'bold')
+nodes.children[0].setAttribute('font-size', '18px')
+nodes.removeAttribute('cursor');
+d3.select("#node-1related")
+ .on('click', null);
+}
+
+
+
+
 
 // if (document.getElementById('node-general')){
 // var nodes = document.getElementById('node-general')

@@ -29,10 +29,12 @@ path.arc {
 .node {
   font: 300 17px "Helvetica Neue", Helvetica, Arial, sans-serif;
   fill: #bbb;
+  transition:fill 1s ease-out .5s;
 }
 
 .node:hover {
   fill: #1f77b4;
+  transition:fill 0s ease-out 0s;
 }
 
 .link {
