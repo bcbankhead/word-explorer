@@ -183,6 +183,10 @@ if(payload != "empty"){
   }
 }
 
+d3.select("g-node").transition().duration(5000)
+    .delay(500)
+    .styleTween("background-color", function() { return d3.interpolate("green", "red"); });
+
 if (document.getElementById('node-2noun')){
 var nodes = document.getElementById('node-2noun')
 var text = nodes.children[0].innerHTML
@@ -289,17 +293,6 @@ d3.select("#node-3related")
 }
 
 
-//
-// if (document.getElementById('node-antonym')){
-// var nodes = document.getElementById('node-antonym')
-// nodes.children[0].setAttribute('fill', '#FF0000')
-// nodes.children[0].setAttribute('font-weight', 'bold')
-// nodes.children[0].setAttribute('font-size', '24px')
-// nodes.removeAttribute('cursor');
-// d3.select("#node-antonym")
-//  .on('click', null);
-// }
-
 if (document.getElementById('node-1adjective')){
 var nodes = document.getElementById('node-1adjective')
 var text = nodes.children[0].innerHTML
@@ -351,20 +344,6 @@ nodes.removeAttribute('cursor');
 d3.select("#node-1related")
  .on('click', null);
 }
-
-
-
-
-
-// if (document.getElementById('node-general')){
-// var nodes = document.getElementById('node-general')
-// nodes.children[0].setAttribute('fill', '#00DDFF')
-// nodes.children[0].setAttribute('font-weight', 'bold')
-// nodes.children[0].setAttribute('font-size', '24px')
-// nodes.removeAttribute('cursor');
-// d3.select("#node-general")
-//   .on('click', null);
-// }
 
 if (document.getElementById('addword')){
   var addWord = document.getElementById('addword');
@@ -446,10 +425,8 @@ if (document.getElementById('delmode')){
   var del = document.getElementById('delmode')
   var add = document.getElementById('addmode')
     del.addEventListener('click', function(){
-    del.style.backgroundColor = 'rgb(255,210,210)'
-    del.style.color = 'rgb(255,0,0)'
-    add.style.backgroundColor = 'rgb(255,255,255)'
-    add.style.color = 'rgb(150,150,150)'
+    del.setAttribute('id','delmode-on')
+    add.setAttribute('id','addmode')
     document.getElementById('word-box').style.display = 'none';
     document.getElementById('word-box-del').style.display = 'inline-block';
   })
@@ -459,10 +436,8 @@ if (document.getElementById('addmode')){
   var del = document.getElementById('delmode')
   var add = document.getElementById('addmode')
     add.addEventListener('click', function(){
-    add.style.backgroundColor = 'rgb(155,240,240)'
-    add.style.color = 'rgb(0,115,115)'
-    del.style.backgroundColor = 'rgb(255,255,255)'
-    del.style.color = 'rgb(150,150,150)'
+      del.setAttribute('id','delmode')
+      add.setAttribute('id','addmode-on')
     document.getElementById('word-box-del').style.display = 'none';
     document.getElementById('word-box').style.display = 'inline-block';
   })

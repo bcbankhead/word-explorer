@@ -22,7 +22,7 @@ module.exports = {
     userCollection.update(
     { username: currentUser },
     { $push: { words: { $each: [ ], $sort: 1 } } },
-    { upsert: true })
+    { upsert: true });
 
     callback('done')
   },
@@ -138,6 +138,7 @@ module.exports = {
         if(typeArray[i].indexOf(" ") <= 0 && typeArray[i].indexOf("-") <= 0){
           obj.imports.push("words." + base + "." + typeArray[i])
         } else {
+          console.log(typeArray[i].replace(/\s/g,"%20"));
           continue;
         }
       }
@@ -152,6 +153,7 @@ module.exports = {
           obj.imports = []
           words.push(obj);
         } else {
+          console.log(typeArray[i].replace(/\s/g,"%20"));
           continue;
         }
       }

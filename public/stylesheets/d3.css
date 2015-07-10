@@ -3,7 +3,7 @@
 .ds3 {
   display:inline-block;
   width: 62%;
-  height: 100%;
+  height: auto;
   vertical-align: top;
   margin: 0 auto;
   box-sizing: border-box;
@@ -29,7 +29,7 @@ path.arc {
 .node {
   font: 300 17px "Helvetica Neue", Helvetica, Arial, sans-serif;
   fill: #bbb;
-  transition:fill 1s ease-out .5s;
+  transition:fill 3s ease-out .5s;
 }
 
 .node:hover {
@@ -49,8 +49,13 @@ path.arc {
   stroke-width: 2px;
 }
 
+/*d3.select("g.node")
+  .transition()
+  .styleTween("color", function() { return d3.interpolate("green", "red"); });*/
+
 .node.target {
   fill: #d62728 !important;
+  transition:fill 0s ease-out 0s;
 }
 
 .link.source {
@@ -63,4 +68,11 @@ path.arc {
 
 .link.target {
   stroke: #2ca02c;
+}
+
+#test {
+  display:inline-block;
+  width:100px;
+  height: 100px;
+  border:1px solid black;
 }
