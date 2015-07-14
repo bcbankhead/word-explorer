@@ -1,0 +1,36 @@
+p
+  if word
+    .backlabel
+      |Hist.
+    .discoveredlabel  
+      |Showing Chord Chart for:
+    .backcenter
+      #back
+    #recentWords
+      #recentWordsHeader
+        |History
+      if recent
+        for item in recent
+          .heading6
+            a(href="/words/" + item) #{item}
+    .discovered
+      .heading2 
+        if errorMsg
+            a(href="/addword/" + word + "1",  id="addword", title="add word to your list?") #{word}
+        else
+            a(href="/addword/" + word,  id="addword", title="add word to your list?") #{word}
+    .heading5
+      |[r]: 
+      if headword != "n/a"
+        a(href="/words/" + headword) #{headword} 
+      else
+        |n/a 
+      |[ipa]: #{ipa}
+      br
+      
+      
+    if definition
+      for item in definition
+        .heading4 #{item}
+    if errorMsg
+      .heading3 #{errorMsg}

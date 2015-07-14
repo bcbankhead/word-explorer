@@ -11,7 +11,7 @@ block content
           include ../partials/profile
         
         #hidden
-          if payload  
+          if payload.length > 2  
             !{payload}
-          else
+          else 
             |empty

@@ -94,8 +94,8 @@ router.post('/words', function(req, res, next) {
 
         if (thesaurusResult != undefined){
           thesaurusResult = JSON.parse(thesaurusResult);
-
           thesaurusObj = functions.trParse(theWord,thesaurusResult);
+          //console.log(thesaurusObj);
           thesaurusObj = JSON.stringify(thesaurusObj)
           notavail = 0;
         } else if (thesaurusResult === undefined) {
@@ -192,9 +192,9 @@ router.get('/words/:word', function(req, res, next){
         }
 
         if (thesaurusResult != undefined){
-          console.log(thesaurusResult);
+          //console.log(thesaurusResult);
           thesaurusResult = JSON.parse(thesaurusResult);
-          console.log(thesaurusResult);
+          //console.log(thesaurusResult);
           thesaurusObj = functions.trParse(theWord,thesaurusResult);
           thesaurusObj = JSON.stringify(thesaurusObj)
           notavail = 0;

@@ -130,30 +130,35 @@ module.exports = {
     }
 
     var writeEntry = function(base,type,typeArray){
-      var obj = {}
+      var obj = {};
+      var tmpArray = [];
       obj.name = "words." + base + "." + type
       obj.size = 1;
       obj.imports = [];
       for (var i =0; i < typeArray.length;i++){
         if(typeArray[i].indexOf(" ") <= 0 && typeArray[i].indexOf("-") <= 0){
+          //add words without hypens or spaces
           obj.imports.push("words." + base + "." + typeArray[i])
         } else {
-          console.log(typeArray[i].replace(/\s/g,"%20"));
+          //skip hyphenated and words with spaces
           continue;
         }
       }
-      words.push(obj);
+      //only add object if imports has values
+      if(obj.imports.length > 0){
+        words.push(obj);
+      }
 
       for (var i =0; i < typeArray.length;i++){
         if(typeArray[i].indexOf(" ") <= 0 && typeArray[i].indexOf("-") <= 0){
           var obj = {}
-          typeArray[i] = typeArray[i].replace(/\s/g,"-");
+          //typeArray[i] = typeArray[i].replace(/\s/g,"-");
           obj.name = "words." + base + "." + typeArray[i];
           obj.size = 1;
           obj.imports = []
           words.push(obj);
         } else {
-          console.log(typeArray[i].replace(/\s/g,"%20"));
+          //skip hyphenated and words with spaces
           continue;
         }
       }
@@ -229,8 +234,6 @@ module.exports = {
             writeEntry(base,type,input.verb.ant);
           }
       }
-
-console.log("ahsdhajhdksa",words);
       return words;
       }
   },
