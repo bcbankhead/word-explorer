@@ -1,6 +1,19 @@
 /*d3.css*/
 
-.ds3 {
+#ds3Frame {
+  display:inline-block;
+  box-sizing: border-box;
+  padding:0;
+  top: 20px;
+  width:62%;
+  height:100%;
+  z-index: 9999;
+  position:absolute;
+  border:0px solid red;
+  background-color: rgb(255, 255, 255);
+}
+
+#ds3 {
   display:inline-block;
   width: 62%;
   height: auto;

@@ -456,6 +456,18 @@ $( document ).ready(function() {
     });
     var hiddendiv = document.getElementById('hidden')
         hiddendiv.innerHTML = 'true';
+
+    $("#backlabel").delay(100).fadeIn(300);
+    $("#discoveredlabel").delay(200).fadeIn(300);
+    $("#backcenter").delay(300).fadeIn(300);
+    $("#discovered").delay(400).fadeIn(300);
+    $("#heading5").delay(500).fadeIn(300);
+    $("#heading4").delay(600).fadeIn(300);
+    $("#heading3").delay(600).fadeIn(300);
+    $("#profile").delay(700).fadeIn(300);
+    $("#ds3Frame").delay(800).fadeOut(300);
+    //$("#div3").fadeIn(3000);
+
   },500)
 });
 

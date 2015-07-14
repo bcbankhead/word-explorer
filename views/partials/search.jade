@@ -1,11 +1,14 @@
 p
   if word
-    .backlabel
-      |Hist.
-    .discoveredlabel  
-      |Showing Chord Chart for:
-    .backcenter
-      #back
+    #backlabelFrame
+      #backlabel
+        |Hist.
+    #discoveredlabelFrame
+      #discoveredlabel  
+        |Showing Chord Chart for:
+    #backcenterFrame
+      #backcenter
+        #back
     #recentWords
       #recentWordsHeader
         |History
@@ -13,24 +16,28 @@ p
         for item in recent
           .heading6
             a(href="/words/" + item) #{item}
-    .discovered
-      .heading2 
-        if errorMsg
-            a(href="/addword/" + word + "1",  id="addword", title="add word to your list?") #{word}
+    #discoveredFrame
+      #discovered
+        .heading2 
+          if errorMsg
+              a(href="/addword/" + word + "1",  id="addword", title="add word to your list?") #{word}
+          else
+              a(href="/addword/" + word,  id="addword", title="add word to your list?") #{word}
+    #heading5Frame
+      #heading5
+        |[r]: 
+        if headword != "n/a"
+          a(href="/words/" + headword) #{headword} 
         else
-            a(href="/addword/" + word,  id="addword", title="add word to your list?") #{word}
-    .heading5
-      |[r]: 
-      if headword != "n/a"
-        a(href="/words/" + headword) #{headword} 
-      else
-        |n/a 
-      |[ipa]: #{ipa}
-      br
+          |n/a 
+        |[ipa]: #{ipa}
+        br
       
       
     if definition
       for item in definition
-        .heading4 #{item}
+        #heading4Frame
+          #heading4 #{item}
     if errorMsg
-      .heading3 #{errorMsg}
+        #heading3Frame
+          .heading3 #{errorMsg}

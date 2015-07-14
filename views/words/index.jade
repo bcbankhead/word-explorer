@@ -2,6 +2,7 @@ extends ../layout
 
 block content
     .main
+      #ds3Frame
       include ../partials/main
       .search
         include ../partials/user
@@ -11,7 +12,10 @@ block content
           include ../partials/profile
         
         #hidden
-          if payload.length > 2  
-            !{payload}
+          if payload
+            if payload.length > 2  
+              !{payload}
+            else 
+              |empty
           else 
             |empty
