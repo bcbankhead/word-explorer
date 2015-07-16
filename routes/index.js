@@ -327,7 +327,13 @@ router.post('/signup', function(req, res, next){
 
 //Get Profile
 router.get('/profiles/:id', checkUser, function(req, res, next) {
-  var currentUser = functions.toProperCase(req.session.user);
+  if(req.session.user){
+    var currentUser = functions.toProperCase(req.session.user);
+    console.log("here");
+  } else {
+    var currentUser = functions.toProperCase(req.cookies.user2);
+    console.log("here2");
+  }
 
   userCollection.findOne({username: currentUser}, function(err, dataset){
     var id = dataset._id;
@@ -350,6 +356,7 @@ router.get('/signup', function(req, res, next){
 
 router.get('/logout', function(req, res, next) {
   req.session = null;
+  res.cookie.user2 = null
   res.clearCookie(req.cookies.recent, {path: '/'});
   res.cookie('recent', '', { expires: new Date(1), path: '/' });
   res.render('login/index', {message: 'Logged out successfully'});
@@ -358,6 +365,7 @@ router.get('/logout', function(req, res, next) {
 //Login Execution
 router.post('/login', function(req, res, next){
   var currentUser = functions.toProperCase(req.body.user);
+  res.cookie('user2', currentUser)
   req.session.user = currentUser;
 
   userCollection.findOne({username: currentUser}, function(err, record){
