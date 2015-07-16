@@ -16,7 +16,7 @@ Key Features:
 - Anonymous browsing: no login required to use.
 
 Future features:
-
+- continue to refine user interface, add in interesting animated starfield background.
 - allow user to create notes attached to each word discovered, for example:
   use notes, additional word URLs (create method to link words together)
 - allow user to create "maps" which can allow a more detailed chronological array of words as they may relate
