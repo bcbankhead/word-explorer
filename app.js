@@ -15,6 +15,7 @@ var app = express();
 var cookieSession = require('cookie-session')
 
 //cookie setup
+app.enable('trust proxy')
 app.set('trust proxy', 1) // trust first proxy
 app.use(cookieSession({
   name: 'session',

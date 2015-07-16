@@ -330,14 +330,12 @@ router.get('/profiles/:id', checkUser, function(req, res, next) {
   var currentUser = functions.toProperCase(req.session.user);
 
   userCollection.findOne({username: currentUser}, function(err, dataset){
-  //   var id = dataset._id;
-  //   console.log(id);
-  //   console.log(req.params.id);
-  //   if (req.params.id != id) {
-  //     res.redirect('/');
-  //   } else {
+    var id = dataset._id;
+    if (req.params.id != id) {
+      res.redirect('/');
+    } else {
       res.render('profiles/index', {currentUser: currentUser, data: dataset});
-    //}
+    }
   });
 });
 
