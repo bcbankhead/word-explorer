@@ -1,6 +1,8 @@
+if(document.getElementById('width'){
 var width = document.getElementById('width')
     width.setAttribute('width', (window.innerWidth * .8));
     console.log(width);
+}
 
 if(document.getElementById('sform')){
   var dictionary = new Bloodhound({
