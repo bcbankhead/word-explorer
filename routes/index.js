@@ -331,6 +331,8 @@ router.get('/profiles/:id', checkUser, function(req, res, next) {
 
   userCollection.findOne({username: currentUser}, function(err, dataset){
     var id = dataset._id;
+    console.log(id);
+    console.log(req.params.id);
     if (req.params.id != id) {
       res.redirect('/');
     } else {
