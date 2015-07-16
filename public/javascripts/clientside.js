@@ -1,4 +1,4 @@
-if(document.getElementById('width'){
+if(document.getElementById('width')){
 var width = document.getElementById('width')
     width.setAttribute('width', (window.innerWidth * .8));
     console.log(width);
