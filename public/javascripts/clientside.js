@@ -363,17 +363,19 @@ if (document.getElementById('addword')){
   })
 }
 
-//document.getElementById('recentWords').style.opacity = 0;
-var recentWords = document.getElementById('recentWords')
-var disabled = document.getElementById('disabled')
-var recentWordsOn = 0;
+if(document.getElementById('recentWords')){
+  //document.getElementById('recentWords').style.opacity = 0;
+  var recentWords = document.getElementById('recentWords')
+  var disabled = document.getElementById('disabled')
+  var recentWordsOn = 0;
 
-window.addEventListener('click', function(){
-    recentWords.style.opacity = 0;
-    recentWords.style.zIndex = 0;
-    recentWordsHeader.style.opacity = 0;
-    recentWordsHeader.style.zIndex = 0;
-})
+  window.addEventListener('click', function(){
+      recentWords.style.opacity = 0;
+      recentWords.style.zIndex = 0;
+      recentWordsHeader.style.opacity = 0;
+      recentWordsHeader.style.zIndex = 0;
+  })
+}
 
 if(document.getElementById('word')){
   var word = document.getElementById('word')
