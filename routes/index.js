@@ -329,10 +329,8 @@ router.post('/signup', function(req, res, next){
 router.get('/profiles/:id', checkUser, function(req, res, next) {
   if(req.session.user){
     var currentUser = functions.toProperCase(req.session.user);
-    console.log("here");
   } else {
     var currentUser = functions.toProperCase(req.cookies.user2);
-    console.log("here2");
   }
 
   userCollection.findOne({username: currentUser}, function(err, dataset){
