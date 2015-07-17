@@ -450,6 +450,12 @@ if (document.getElementById('addmode')){
 }
 
 if(document.getElementById('hidden')){
+  var ds3FrameWidth = $("#ds3").width();
+  var ds3FrameHeight = $(".main").height();
+  $("#ds3Frame").width(ds3FrameWidth);
+  $("#ds3Frame").height(ds3FrameHeight);
+  $("#graph").height(ds3FrameHeight);
+
   $( document ).ready(function() {
     setTimeout(function(){
     var status = document.getElementById('word')
