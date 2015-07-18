@@ -1,3 +1,9 @@
+if(document.getElementById('hidden')){
+  var ds3FrameWidth = $("#ds3").width();
+  var loadingLeft = (ds3FrameWidth/2);
+  $("#loading").offset({top:200, left:loadingLeft});
+  $("#loading").show();
+}
 if(document.getElementById('width')){
 var width = document.getElementById('width')
     width.setAttribute('width', (window.innerWidth * .8));
@@ -479,6 +485,7 @@ if(document.getElementById('hidden')){
       $("#heading3").delay(600).fadeIn(300);
       $("#profile").delay(700).fadeIn(300);
       $("#ds3Frame").delay(800).fadeOut(300);
+      $("#loading").delay(850).fadeOut(300);
       //$("#div3").fadeIn(3000);
 
     },500)

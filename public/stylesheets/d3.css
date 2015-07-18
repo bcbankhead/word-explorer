@@ -5,11 +5,25 @@
   box-sizing: border-box;
   padding:0;
   top: 20px;
+  z-index: 9998;
+  position:absolute;
+  border:0px solid red;
+  background-color: rgb(255, 255, 255);
+}
+
+#loading {
+  display:none;
+  box-sizing: border-box;
+  padding:0;
+  width:400px;
+  height:300px;
+  top:200px;
   z-index: 9999;
   position:absolute;
   border:0px solid red;
   background-color: rgb(255, 255, 255);
 }
+
 
 #ds3 {
   display:inline-block;
