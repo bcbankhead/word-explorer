@@ -24,7 +24,9 @@ module.exports = {
     { $push: { words: { $each: [ ], $sort: 1 } } },
     { upsert: true });
 
-    callback('done')
+    userCollection.findOne({username: currentUser}, function(err, dataset){
+      callback(dataset)
+    });
   },
 
   defCollect: function(def1,def2){

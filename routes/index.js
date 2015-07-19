@@ -110,16 +110,15 @@ router.post('/words', function(req, res, next) {
           if (currentUser !== 'new' || currentUser != '' || currentUser != null){
             functions.updateData(currentUser,theWord,function(callback){
               console.log("record update (type 0): ",callback);
+              userCollection.findOne({username: currentUser}, function(err, dataset){
+                res.cookie('recent', recent)
+                res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: currentUser, data: dataset });
+              });
             })
-            };
+          };
           if(!currentUser || currentUser === 'new'){
               res.cookie('recent', recent)
               res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: 'new'});
-          } else {
-            userCollection.findOne({username: currentUser}, function(err, dataset){
-              res.cookie('recent', recent)
-              res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, definition: definitions, currentUser: currentUser, data: dataset });
-            });
           }
         } else { //(theWord.length <= 0 && notavail === 1)
           if(!currentUser || currentUser === 'new'){
@@ -327,12 +326,7 @@ router.post('/signup', function(req, res, next){
 
 //Get Profile
 router.get('/profiles/:id', checkUser, function(req, res, next) {
-  if(req.session.user){
-    var currentUser = functions.toProperCase(req.session.user);
-  } else {
-    var currentUser = functions.toProperCase(req.cookies.user2);
-  }
-
+  var currentUser = functions.toProperCase(req.session.user);
   userCollection.findOne({username: currentUser}, function(err, dataset){
     var id = dataset._id;
     if (req.params.id != id) {
@@ -354,7 +348,6 @@ router.get('/signup', function(req, res, next){
 
 router.get('/logout', function(req, res, next) {
   req.session = null;
-  res.cookie.user2 = null
   res.clearCookie(req.cookies.recent, {path: '/'});
   res.cookie('recent', '', { expires: new Date(1), path: '/' });
   res.render('login/index', {message: 'Logged out successfully'});
@@ -363,7 +356,6 @@ router.get('/logout', function(req, res, next) {
 //Login Execution
 router.post('/login', function(req, res, next){
   var currentUser = functions.toProperCase(req.body.user);
-  res.cookie('user2', currentUser)
   req.session.user = currentUser;
 
   userCollection.findOne({username: currentUser}, function(err, record){
