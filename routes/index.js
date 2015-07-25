@@ -211,13 +211,6 @@ router.get('/words/:word', function(req, res, next){
         theWord = functions.toProperCase(theWord);
         if(currentUser && notavail == 0){
           userCollection.findOne({username: currentUser}, function(err, dataset){
-            // wordCollection.update(
-            // { word: theWord },
-            // {
-            //   word: theWord,
-            //   ipa: pearsonIPA
-            // },
-            // { upsert: true });
           res.cookie('recent', recent)
           res.render('words/index', { word: theWord, recent: recentList, headword: pearsonHW, ipa: pearsonIPA, payload: thesaurusObj, data: dataset, currentUser: currentUser, definition: definitions});
           });
