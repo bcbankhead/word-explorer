@@ -390,6 +390,7 @@ if(document.getElementById('word')){
       document.getElementById('submit').disabled = true;
       disabled.style.opacity = .75;
       disabled.style.zIndex = 9999;
+      disabled.style.pointerEvents = "auto"
     }
   })
 
@@ -398,6 +399,7 @@ if(document.getElementById('word')){
       document.getElementById('submit').disabled = true;
       disabled.style.opacity = .75;
       disabled.style.zIndex = 9999;
+      disabled.style.pointerEvents = "auto"
     }
   })
 
@@ -406,10 +408,12 @@ if(document.getElementById('word')){
       document.getElementById('submit').disabled = false;
       disabled.style.opacity = 0;
       disabled.style.zIndex = 0;
+      disabled.style.pointerEvents = "none"
     } else {
       document.getElementById('submit').disabled = true;
       disabled.style.opacity = .75;
       disabled.style.zIndex = 9999;
+      disabled.style.pointerEvents = "auto"
     }
   })
 }
