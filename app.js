@@ -74,6 +74,10 @@ app.use(function(err, req, res, next) {
   });
 });
 
+if (app.get('env') === 'production') {
+   app.listen(3000);
+ }
+ 
 // //global unlogged-in redirect
 // app.use(function (req, res, next) {
 //   var cookieUser = req.session.user;
