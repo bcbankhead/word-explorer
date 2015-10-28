@@ -385,6 +385,7 @@ if(document.getElementById('recentWords')){
 
 if(document.getElementById('word')){
   var word = document.getElementById('word')
+  var disabled = document.getElementById('disabled')
   word.addEventListener('focus', function(){
     if(word.value.length === 0){
       document.getElementById('submit').disabled = true;
@@ -404,6 +405,7 @@ if(document.getElementById('word')){
   })
 
   word.addEventListener('keyup', function(){
+    console.log("key released");
     if(word.value.length > 0){
       document.getElementById('submit').disabled = false;
       disabled.style.opacity = 0;
